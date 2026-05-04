@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Essência Digital – Gestão de Tráfego</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="./public/favicon.png">
+  <style>
+    /* ── Variables ───────────────────────────────────── */
+    :root {
+      --gold:       #c3a465;
+      --gold-light: #e0cc9d;
+      --gold-dark:  #8e7442;
+      --navy:       #05071a;
+      --navy-light: #0d102a;
+      --white:      #ffffff;
+    }
+
+    /* ── Reset ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; font-family: inherit; border: none; }
+    ::selection { background: rgba(195,164,101,.3); }
+
+    /* ── Utilities ───────────────────────────────────── */
+    .container { 
+      max-width: 100%; /* Antes era 1400px */
+      margin: 0; 
+      padding: 0 4rem; /* Ajuste conforme o respiro que você deseja nas laterais */
+    }
+    @media (max-width: 768px) { .container { padding: 0 1.5rem; } }
+
+    .glass {
+      background: rgba(255,255,255,.03);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .glass-gold {
+      background: rgba(195,164,101,.05);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(195,164,101,.2);
+    }
+    .text-gradient {
+      background: linear-gradient(90deg, #fff 0%, #fff 50%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .metric-border {
+      border-left: 4px solid var(--gold);
+      background: rgba(255,255,255,.04);
+      padding: 1rem;
+      border-radius: 0 .75rem .75rem 0;
+    }
+    .gold-glow { box-shadow: 0 0 40px rgba(195,164,101,.25); }
+
+    /* ── Animations ──────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes pulse-ring {
+      0%   { transform: scale(.95); box-shadow: 0 0 0 0 rgba(195,164,101,.4); }
+      70%  { transform: scale(1);   box-shadow: 0 0 0 14px rgba(195,164,101,0); }
+      100% { transform: scale(.95); box-shadow: 0 0 0 0  rgba(195,164,101,0); }
+    }
+
+    .anim-fade-up        { opacity: 0; }
+    .anim-fade-right     { opacity: 0; }
+    .anim-fade-up.visible   { animation: fadeUp   .7s ease forwards; }
+    .anim-fade-right.visible{ animation: fadeRight .7s ease forwards; }
+
+    /* stagger helpers */
+    .delay-1 { animation-delay:.1s !important; }
+    .delay-2 { animation-delay:.2s !important; }
+    .delay-3 { animation-delay:.3s !important; }
+    .delay-4 { animation-delay:.4s !important; }
+
+    nav.navbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 50; padding: 1rem 1.5rem;
+    }
+    .navbar-inner {
+      background: rgba(5,7,26,.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(195,164,101,.2);
+      padding: .9rem 2rem;
+      border-radius: 1rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .logo-mark,
+    .logo-image {
+      width: 2rem; height: 2rem;
+      border-radius: .75rem;
+      box-shadow: 0 4px 12px rgba(195,164,101,.15);
+      object-fit: cover;
+    }
+    .logo-mark {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    }
+    .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem; font-weight: 700;
+      letter-spacing: -.03em;
+      color: var(--gold);
+    }
+    .logo-text span { color: var(--white); }
+    .nav-links {
+      display: flex; align-items: center; gap: 2.5rem;
+      font-size: .75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: rgba(255,255,255,.7);
+    }
+    .nav-links a:hover { color: var(--gold); transition: color .2s; }
+    .nav-cta {
+      padding: .45rem 1.4rem;
+      background: rgba(195,164,101,.1);
+      border: 1px solid rgba(195,164,101,.3);
+      color: var(--gold) !important;
+      border-radius: 9999px;
+      transition: background .2s, color .2s !important;
+    }
+    .nav-cta:hover {
+      background: var(--gold) !important;
+      color: var(--navy) !important;
+    }
+    @media (max-width: 768px) { .nav-links { display: none; } }
+
+    /* ── Hero ────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      padding: 8rem 0 4rem;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 60% 0%, rgba(195,164,101,.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      align-items: start;
+      position: relative; z-index: 1;
+    }
+    @media (min-width: 1024px) {
+      .hero-grid { grid-template-columns: 8fr 4fr; }
+    }
+    .hero-badge {
+      display: inline-block;
+      padding: .25rem .75rem;
+      background: rgba(195,164,101,.1);
+      color: var(--gold);
+      border: 1px solid rgba(195,164,101,.2);
+      border-radius: 9999px;
+      font-size: .7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .18em;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      margin-bottom: 1.5rem;
+    }
+    .hero-desc {
+      font-size: 1.1rem; color: rgba(255,255,255,.5);
+      max-width: 36rem; margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+    .hero-btns {
+      display: flex; flex-wrap: wrap; gap: 1rem;
+    }
+    .btn-primary {
+      padding: 1rem 2rem;
+      background: var(--gold); color: var(--navy);
+      font-weight: 700; border-radius: .75rem;
+      font-size: .8rem; letter-spacing: .12em; text-transform: uppercase;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 12px 40px rgba(195,164,101,.2);
+    }
+    .btn-primary:hover { transform: scale(1.04); box-shadow: 0 16px 48px rgba(195,164,101,.35); }
+    .btn-secondary {
+      padding: 1rem 2rem;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      color: var(--white); font-weight: 700;
+      border-radius: .75rem;
+      font-size: .8rem; letter-spacing: .12em; text-transform: uppercase;
+      transition: background .2s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,.1); }
+    .hero-stats-card {
+      border-radius: 2rem;
+      padding: 1.5rem;
+    }
+    .stat-item { position: relative; }
+    .stat-label {
+      font-size: .75rem; color: rgba(255,255,255,.4);
+      text-transform: uppercase; font-weight: 700; letter-spacing: .18em;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: .5rem;
+    }
+    .stat-icon { opacity: 0; transition: opacity .2s; }
+    .stat-item:hover .stat-icon { opacity: 1; }
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.2rem; font-weight: 800;
+      color: var(--gold); margin-bottom: .25rem;
+    }
+    .stat-sub { font-size: .8rem; color: rgba(224,204,157,.6); }
+    .stat-divider { margin: 2rem 0; border-bottom: 1px solid rgba(255,255,255,.05); }
+
+    /* ── Services ────────────────────────────────────── */
+    .services {
+      padding: 5rem 0;
+      background: rgba(5,7,26,.5);
+      position: relative; overflow: hidden;
+    }
+    .services::before {
+      content: '';
+      position: absolute; top: -50%; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(195,164,101,.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800; margin-bottom: 1.5rem;
+    }
+    .section-desc { color: rgba(255,255,255,.6); font-size: 1.05rem; line-height: 1.7; }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+    .service-card {
+      padding: 1.5rem;
+      border-radius: 1.5rem;
+      border: 1px solid rgba(255,255,255,.05);
+      transition: background .2s;
+    }
+    .service-card:hover { background: rgba(255,255,255,.07); }
+    .service-icon-wrap {
+      width: 3.5rem; height: 3.5rem;
+      background: rgba(195,164,101,.1);
+      border-radius: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+      transition: transform .2s, background .2s;
+    }
+    .service-card:hover .service-icon-wrap {
+      transform: scale(1.1);
+      background: rgba(195,164,101,.2);
+    }
+    .service-icon-wrap svg { width: 1.6rem; height: 1.6rem; }
+    .service-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem; font-weight: 700; margin-bottom: .75rem;
+    }
+    .service-desc { color: rgba(255,255,255,.5); font-size: .9rem; line-height: 1.6; }
+
+    /* ── Cases ───────────────────────────────────────── */
+    .cases { padding: 5rem 0; }
+    .cases-header {
+      display: flex; flex-wrap: wrap; gap: 2rem;
+      justify-content: space-between; align-items: flex-end;
+      margin-bottom: 3rem;
+    }
+    .cases-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: .75rem; color: var(--gold);
+      text-transform: uppercase; letter-spacing: .2em;
+      margin-bottom: 1rem;
+    }
+    .cases-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.2rem, 6vw, 3.5rem);
+      font-weight: 800; line-height: 1.1;
+    }
+    .cases-subtitle { color: rgba(255,255,255,.5); max-width: 22rem; font-size: .95rem; line-height: 1.6; margin-bottom: .5rem; }
+    .case-card {
+      background: rgba(255,255,255,.02);
+      border: 1px solid rgba(195,164,101,.1);
+      border-radius: 2rem;
+      padding: 2rem 1.5rem; margin-bottom: 3rem;
+    }
+    @media (min-width: 1024px) { .case-card { padding: 2.5rem; } }
+    .case-inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+    @media (min-width: 1024px) {
+      .case-inner { grid-template-columns: 5fr 7fr; }
+    }
+    .case-niche-badge {
+      display: inline-block;
+      padding: .2rem .75rem;
+      background: rgba(195,164,101,.15); color: var(--gold);
+      border-radius: 9999px;
+      font-size: .65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .12em; margin-bottom: 1.5rem;
+    }
+    .case-client {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 800; margin-bottom: 1rem;
+    }
+    .case-desc { color: rgba(255,255,255,.4); font-size: .9rem; line-height: 1.7; margin-bottom: 2rem; max-width: 26rem; }
+    .sparkline {
+      display: flex; align-items: flex-end; gap: 5px;
+      height: 4rem; margin-bottom: 2rem; opacity: .5;
+    }
+    .sparkline-bar {
+      flex: 1; border-radius: .2rem .2rem 0 0;
+      background: rgba(195,164,101,.3);
+      transition: background .2s;
+    }
+    .sparkline-bar.active { background: var(--gold); }
+    .btn-case {
+      width: 100%; padding: 1.2rem;
+      background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+      color: var(--white); font-weight: 700;
+      border-radius: .75rem;
+      font-size: .8rem; letter-spacing: .1em; text-transform: uppercase;
+      box-shadow: 0 8px 24px rgba(195,164,101,.1);
+      transition: transform .2s;
+    }
+    .btn-case:hover { transform: scale(1.02); }
+    .metrics-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    }
+    .metric-label {
+      font-size: .7rem; text-transform: uppercase; color: rgba(255,255,255,.4);
+      font-weight: 700; letter-spacing: .1em; margin-bottom: .25rem;
+    }
+    .metric-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem; font-weight: 800; margin-bottom: .2rem;
+    }
+    .metric-sub { font-size: .6rem; color: var(--gold); }
+    .campaigns-list { grid-column: 1 / -1; margin-top: 1rem; }
+    .campaigns-eyebrow {
+      font-size: .7rem; text-transform: uppercase; color: rgba(255,255,255,.3);
+      font-weight: 700; letter-spacing: .18em; padding-left: .25rem; margin-bottom: .75rem;
+    }
+    .campaign-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .9rem 1.2rem;
+      border-radius: .75rem;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
+      margin-bottom: .6rem;
+    }
+    .campaign-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); margin-right: .75rem; }
+    .campaign-name { font-size: .8rem; font-weight: 700; text-transform: uppercase; }
+    .campaign-cpl { font-size: .8rem; font-weight: 700; color: var(--gold); }
+
+    /* ── CTA ─────────────────────────────────────────── */
+    .cta-section { padding: 6rem 0; position: relative; }
+    .cta-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(195,164,101,.05);
+      filter: blur(150px);
+      z-index: -1;
+    }
+    .cta-box {
+      max-width: 60rem; margin: 0 auto;
+      padding: 3rem 2rem; border-radius: 3rem;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    @media (min-width: 768px) { .cta-box { padding: 4rem 3rem; } }
+    .cta-glow {
+      position: absolute; top: 0; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 16rem; height: 16rem;
+      background: rgba(195,164,101,.2);
+      filter: blur(3rem);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .cta-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 800; margin-bottom: 2rem;
+      line-height: 1.1;
+    }
+    .cta-desc { font-size: 1rem; color: rgba(255,255,255,.6); margin-bottom: 2rem; max-width: 34rem; margin-left: auto; margin-right: auto; line-height: 1.7; }
+    .cta-btns { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
+    .btn-cta-primary {
+      padding: 1rem 2rem;
+      background: var(--gold); color: var(--navy);
+      font-weight: 700; border-radius: 9999px;
+      font-size: .9rem; display: flex; align-items: center; gap: .75rem;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn-cta-primary:hover { transform: scale(1.03); box-shadow: 0 16px 40px rgba(195,164,101,.35); }
+    .btn-cta-secondary {
+      padding: 1rem 2rem;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      color: var(--white); font-weight: 700;
+      border-radius: 9999px; font-size: .9rem;
+      transition: background .2s;
+    }
+    .btn-cta-secondary:hover { background: rgba(255,255,255,.1); }
+
+    /* ── Footer ──────────────────────────────────────── */
+    footer {
+      padding: 2.5rem 0;
+      border-top: 1px solid rgba(255,255,255,.05);
+    }
+    .footer-inner {
+      display: flex; flex-wrap: wrap; gap: 1.5rem;
+      align-items: center; justify-content: space-between;
+    }
+    .footer-social { display: flex; align-items: center; gap: 1.5rem; }
+    .footer-social a { color: rgba(255,255,255,.4); transition: color .2s; }
+    .footer-social a:hover { color: var(--gold); }
+    .footer-social svg { width: 1.2rem; height: 1.2rem; }
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: .8rem; color: rgba(255,255,255,.3);
+    }
+
+    /* ── Scrollbar ───────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--navy); }
+    ::-webkit-scrollbar-thumb { background: rgba(195,164,101,.3); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-inner">
+      <div class="logo">
+        <img src="public/logo/Logo.png" alt="Essencia Digital Logo" class="logo-image" />
+        <span class="logo-text">ESSÊNCIA <span>DIGITAL</span></span>
+      </div>
+      <div class="nav-links">
+        <a href="#cases">Portfólio</a>
+        <a href="#services">Estratégia</a>
+        <a href="#contact" class="nav-cta">Agendar Consultoria</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+
+      <div class="anim-fade-up">
+        <div class="hero-badge">Gestão Profissional de Tráfego Pago</div>
+        <h1>Performance que <br><span class="text-gradient">transforma negócios.</span></h1>
+        <p class="hero-desc">
+          Relatórios consolidados de gestão com foco absoluto em conversão e leads qualificados.
+          Extraímos a máxima eficiência do seu orçamento em Meta Ads e Google Ads.
+        </p>
+        <div class="hero-btns">
+          <button class="btn-primary">Agendar Diagnóstico Grátis</button>
+          <button class="btn-secondary">Explorar Resultados</button>
+        </div>
+      </div>
+
+      <div class="hero-stats-card glass anim-fade-right delay-2">
+        <div class="stat-item">
+          <div class="stat-label">
+            Crescimento Mensal
+            <span class="stat-icon">📈</span>
+          </div>
+          <div class="stat-value">+24%</div>
+          <div class="stat-sub">Média em Leads</div>
+          <div class="stat-divider"></div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">
+            Investimento Gerenciado
+            <span class="stat-icon">💼</span>
+          </div>
+          <div class="stat-value">+R$1.200k</div>
+          <div class="stat-sub">Performance Ativa</div>
+          <div class="stat-divider"></div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">
+            Custo Médio
+            <span class="stat-icon">💎</span>
+          </div>
+          <div class="stat-value">R$ 3,61</div>
+          <div class="stat-sub">por mensagem</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ SERVICES ═══════════════ -->
+<section id="services" class="services">
+  <div class="container">
+    <div style="text-align:center; max-width:44rem; margin:0 auto 3rem;" class="anim-fade-up">
+      <h2 class="section-title">A essência da <span style="color:var(--gold)">performance.</span></h2>
+      <p class="section-desc">Não é sobre gastar dinheiro, é sobre investir com inteligência artificial e humana para dominar o seu mercado.</p>
+    </div>
+
+    <div class="services-grid">
+
+      <div class="service-card glass anim-fade-up delay-1">
+        <div class="service-icon-wrap">
+          <!-- BarChart3 -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+        </div>
+        <div class="service-title">Gestão de Criativos</div>
+        <p class="service-desc">Análise de criativos com estudo de público e inteligência de mercado.</p>
+      </div>
+
+      <div class="service-card glass anim-fade-up delay-2">
+        <div class="service-icon-wrap">
+          <!-- Rocket -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+            <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+            <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+          </svg>
+        </div>
+        <div class="service-title">Escala Vertical</div>
+        <p class="service-desc">Aumentamos o investimento mantendo a lucratividade.</p>
+      </div>
+
+      <div class="service-card glass anim-fade-up delay-3">
+        <div class="service-icon-wrap">
+          <!-- Target -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+          </svg>
+        </div>
+        <div class="service-title">Targeting Preciso</div>
+        <p class="service-desc">Sua mensagem para quem realmente quer comprar.</p>
+      </div>
+
+      <div class="service-card glass anim-fade-up delay-4">
+        <div class="service-icon-wrap">
+          <!-- Zap -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+        </div>
+        <div class="service-title">Otimização 24/7</div>
+        <p class="service-desc">Seus anúncios monitorados por quem entende de lucro.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CASES ═══════════════ -->
+<section id="cases" class="cases">
+  <div class="container">
+    <div class="cases-header">
+      <div class="anim-fade-up">
+        <div class="cases-eyebrow">O que entregamos</div>
+        <h2 class="cases-title">Resultados que <span class="text-gradient">falam por si.</span></h2>
+      </div>
+      <p class="cases-subtitle anim-fade-up delay-2">
+        Dados reais de clientes que confiaram na Essencia Digital para escalar suas operações.
+      </p>
+    </div>
+
+    <!-- Case 1: Trata Tijuca -->
+    <div class="case-card anim-fade-up">
+      <div class="case-inner">
+        <div style="display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div class="case-niche-badge">Nicho Fisioterapia</div>
+            <h3 class="case-client">Trata Tijuca</h3>
+            <p class="case-desc">27/04 - 01/05 . 2025</p>
+            <p class="case-desc">Estratégia focada em captação de leads qualificados para tratamentos especializados, otimizando o custo por conversa e aumentando a taxa de agendamento.</p>
+            <div class="sparkline">
+              <div class="sparkline-bar" style="height:40%"></div>
+              <div class="sparkline-bar" style="height:65%"></div>
+              <div class="sparkline-bar" style="height:35%"></div>
+              <div class="sparkline-bar" style="height:90%"></div>
+              <div class="sparkline-bar" style="height:55%"></div>
+              <div class="sparkline-bar" style="height:80%"></div>
+              <div class="sparkline-bar" style="height:45%"></div>
+              <div class="sparkline-bar active" style="height:100%"></div>
+            </div>
+          </div>
+          <button class="btn-case">SOLICITAR ANÁLISE DE MERCADO</button>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-border">
+            <div class="metric-label">Resultados</div>
+            <div class="metric-value">105</div>
+            <div class="metric-sub">Leads / Conversas</div>
+          </div>
+          <div class="metric-border">
+            <div class="metric-label">Custo Médio</div>
+            <div class="metric-value">R$ 3,61</div>
+            <div class="metric-sub">Otimizado</div>
+          </div>
+          <div class="metric-border">
+            <div class="metric-label">Investimento</div>
+            <div class="metric-value">R$ 379,90</div>
+            <div class="metric-sub">Meta Ads</div>
+          </div>
+          <div class="metric-border">
+            <div class="metric-label">Alcance</div>
+            <div class="metric-value">163.544</div>
+            <div class="metric-sub">Potencial Escalável</div>
+          </div>
+
+          <div class="campaigns-list">
+            <div class="campaigns-eyebrow">Performance por Conjunto</div>
+            <div class="campaign-row">
+              <div style="display:flex; align-items:center;">
+                <div class="campaign-dot"></div>
+                <span class="campaign-name">Leads Trata Tijuca</span>
+              </div>
+              <span class="campaign-cpl">R$ 3,01 / res</span>
+            </div>
+            <div class="campaign-row">
+              <div style="display:flex; align-items:center;">
+                <div class="campaign-dot"></div>
+                <span class="campaign-name">Primeiro Conjunto</span>
+              </div>
+              <span class="campaign-cpl">R$ 4,88 / res</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Case 2: Badminton -->
+    <div class="case-card anim-fade-up">
+      <div class="case-inner">
+        <div style="display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div class="case-niche-badge">Nicho Esportes</div>
+            <h3 class="case-client">Badbons Tijuca</h3>
+            <p class="case-desc">03/02 - 17/02 . 2025</p>
+            <p class="case-desc">Campanha de expansão para novas unidades, focada em gerar interesse imediato e conversas diretas para matrículas de novos alunos.</p>
+            <div class="sparkline">
+              <div class="sparkline-bar" style="height:55%"></div>
+              <div class="sparkline-bar" style="height:40%"></div>
+              <div class="sparkline-bar" style="height:75%"></div>
+              <div class="sparkline-bar" style="height:50%"></div>
+              <div class="sparkline-bar" style="height:95%"></div>
+              <div class="sparkline-bar" style="height:60%"></div>
+              <div class="sparkline-bar" style="height:85%"></div>
+              <div class="sparkline-bar active" style="height:100%"></div>
+            </div>
+          </div>
+          <button class="btn-case">SOLICITAR ANÁLISE DE MERCADO</button>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-border">
+            <div class="metric-label">Resultados</div>
+            <div class="metric-value">133</div>
+            <div class="metric-sub">Leads / Conversas</div>
+          </div>
+          <div class="metric-border">
+            <div class="metric-label">Custo Médio</div>
+            <div class="metric-value">R$ 3,56</div>
+            <div class="metric-sub">Otimizado</div>
+          </div>
+          <div class="metric-border">
+            <div class="metric-label">Investimento</div>
+            <div class="metric-value">R$ 473,55</div>
+            <div class="metric-sub">Meta Ads</div>
+          </div>
+          <div class="metric-border">
+            <div class="metric-label">Alcance</div>
+            <div class="metric-value">34.954</div>
+            <div class="metric-sub">Potencial Escalável</div>
+          </div>
+
+          <div class="campaigns-list">
+            <div class="campaigns-eyebrow">Performance por Conjunto</div>
+            <div class="campaign-row">
+              <div style="display:flex; align-items:center;">
+                <div class="campaign-dot"></div>
+                <span class="campaign-name">Tijuca Premium</span>
+              </div>
+              <span class="campaign-cpl">R$ 3,38 / res</span>
+            </div>
+            <div class="campaign-row">
+              <div style="display:flex; align-items:center;">
+                <div class="campaign-dot"></div>
+                <span class="campaign-name">Novos Alunos Taquara</span>
+              </div>
+              <span class="campaign-cpl">R$ 3,82 / res</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════ CTA ═══════════════ -->
+<section id="contact" class="cta-section">
+  <div class="container">
+    <div class="cta-box glass anim-fade-up">
+      <div class="cta-glow"></div>
+      <h2 class="cta-title">Pronto para escalar seu <br><span style="color:var(--gold)">faturamento?</span></h2>
+      <p class="cta-desc">Agende uma consultoria estratégica gratuita e descubra o potencial real de escala do seu negócio.</p>
+      <div class="cta-btns">
+        <a href="https://wa.me/5521999999999" target="_blank" rel="noopener noreferrer" class="btn-cta-primary gold-glow">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Falar com Especialista
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="logo">
+        <div style="width:2rem;height:2rem;border-radius:.5rem;background:rgba(195,164,101,.2);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--gold);font-family:'Syne',sans-serif;">E</div>
+        <span class="logo-text">ESSÊNCIA <span>DIGITAL</span></span>
+      </div>
+      <div class="footer-social">
+        <!-- Instagram -->
+        <a href="https://www.instagram.com/natanroldao.dev/" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+        </a>
+        <!-- Mail -->
+        <a href="#" aria-label="Email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </a>
+      </div>
+      <div class="footer-copy">© 2024 ESSENCIA DIGITAL. TODOS OS DIREITOS RESERVADOS.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Intersection Observer for scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.anim-fade-up, .anim-fade-right').forEach(el => {
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
