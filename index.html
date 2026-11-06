@@ -8,8 +8,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="La Dolce" />
-  <link rel="apple-touch-icon" href="logo.png" />
-  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  <link rel="icon" type="image/png" href="icon.png" />
+  <link rel="shortcut icon" type="image/png" href="icon.png" />
   <link rel="manifest" href="manifest.json" />
   <title>La Dolce Brasil — Cadastro de Vendas</title>
   <link rel="stylesheet" href="style.css" />
@@ -136,6 +137,15 @@
               <path d="M16 10a4 4 0 0 1-8 0"></path>
             </svg>
             <span>Ir para Registro de Vendas</span>
+          </button>
+
+          <button type="button" id="goToFinanceBtn" class="ios-btn-secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+            <span>Abrir Gestão Financeira</span>
           </button>
 
           <button type="button" id="logoutSellerBtn" class="ios-btn-secondary">
@@ -369,6 +379,186 @@
 
       </section>
 
+      <!-- =================================================================
+           ABA 3: GESTÃO FINANCEIRA & PRECIFICAÇÃO (VISÃO GERAL)
+           ================================================================= -->
+      <section id="tabFinance" class="tab-pane" aria-labelledby="tabBtnFinance">
+
+        <!-- Barra Superior Executiva + Botão de Sincronização -->
+        <div class="finance-top-bar">
+          <div>
+            <span class="finance-eyebrow">Visão Geral • 50% João / 50% Natan</span>
+            <h2 class="finance-main-title">Gestão &amp; Precificação</h2>
+          </div>
+          <button type="button" id="refreshFinanceBtn" class="finance-sync-btn" title="Sincronizar com a planilha">
+            <svg id="syncIconSvg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            <span id="syncBtnLabel">Atualizar</span>
+          </button>
+        </div>
+
+        <!-- Status da última leitura -->
+        <div class="finance-sync-status">
+          <span id="financeSyncDot" class="sync-dot"></span>
+          <span id="financeLastSyncText">Conectado à aba "Visão Geral"</span>
+        </div>
+
+        <!-- CARD HERO: RESOLUÇÃO FINAL DO ACERTO (PIX ENTRE SÓCIOS) -->
+        <div class="settlement-hero-card">
+          <div class="settlement-hero-header">
+            <span class="settlement-badge">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 22 12 12 22 2 12 12 2"></polygon>
+              </svg>
+              Resolução Final do Acerto
+            </span>
+            <span id="finEquilibrioTag" class="settlement-rule-tag">Equilíbrio (R$ 0,00)</span>
+          </div>
+
+          <p id="finResolucaoTexto" class="settlement-hero-message">
+            👉 NATAN deve transferir via Pix para JOÃO o valor de R$ 87,25
+          </p>
+
+          <div class="settlement-partners-strip">
+            <div class="partner-balance-pill">
+              <span class="partner-pill-name">João (Saldo Compensação)</span>
+              <strong id="finHeroSaldoJoao" class="partner-pill-val val-positive">R$ 87,25</strong>
+            </div>
+            <div class="partner-balance-pill">
+              <span class="partner-pill-name">Natan (Saldo Compensação)</span>
+              <strong id="finHeroSaldoNatan" class="partner-pill-val val-negative">-R$ 87,25</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1. PAINEL DE INDICADORES GERAIS DO NEGÓCIO (BENTO GRID 2x2) -->
+        <div class="ios-card finance-section-card">
+          <div class="label-row" style="margin-bottom: 12px;">
+            <span class="ios-section-label">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              Indicadores Gerais do Negócio
+            </span>
+          </div>
+
+          <div class="kpi-bento-grid">
+            <!-- KPI 1: Receita Total Bruta -->
+            <div class="kpi-bento-item">
+              <span class="kpi-label">Receita Total Bruta</span>
+              <strong id="kpiReceitaValor" class="kpi-value">R$ 46,00</strong>
+              <span id="kpiReceitaSub" class="kpi-sub">Total: 7 palhas vendidas</span>
+            </div>
+
+            <!-- KPI 2: Despesas Totais Realizadas -->
+            <div class="kpi-bento-item">
+              <span class="kpi-label">Despesas Realizadas</span>
+              <strong id="kpiDespesasValor" class="kpi-value">R$ 338,50</strong>
+              <span id="kpiDespesasSub" class="kpi-sub">Gastos Esporádicos: R$ 62,00</span>
+            </div>
+
+            <!-- KPI 3: Lucro Líquido Consolidado -->
+            <div id="kpiLucroBox" class="kpi-bento-item kpi-status-negative">
+              <span class="kpi-label">Lucro Líquido</span>
+              <strong id="kpiLucroValor" class="kpi-value">-R$ 292,50</strong>
+              <span id="kpiLucroSub" class="kpi-sub">Divisão igualitária (50% cada)</span>
+            </div>
+
+            <!-- KPI 4: Margem Operacional -->
+            <div id="kpiMargemBox" class="kpi-bento-item kpi-status-negative">
+              <span class="kpi-label">Margem Operacional</span>
+              <strong id="kpiMargemValor" class="kpi-value">-635,9%</strong>
+              <span id="kpiMargemSub" class="kpi-sub">Prejuízo</span>
+            </div>
+          </div>
+
+          <!-- Barra de Detalhamento de Saídas -->
+          <div class="outflows-breakdown-box">
+            <div class="outflows-header">Detalhamento de Saídas</div>
+            <div class="outflows-row">
+              <span>Insumos Diretos da Palha</span>
+              <strong id="finInsumosDiretos">R$ 276,50</strong>
+            </div>
+            <div class="outflows-row">
+              <span>Gastos Esporádicos (Almoço/Água/Transp.)</span>
+              <strong id="finGastosEsporadicos">R$ 62,00</strong>
+            </div>
+            <div class="outflows-row outflows-total">
+              <span>Total de Saídas</span>
+              <strong id="finTotalSaidas">R$ 338,50</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. DIVISÃO DE GASTOS, LUCROS E ACERTO DE CONTAS (50% JOÃO / 50% NATAN) -->
+        <div class="ios-card finance-section-card">
+          <div class="label-row" style="margin-bottom: 12px;">
+            <span class="ios-section-label">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              Divisão 50/50 &amp; Acerto de Contas
+            </span>
+          </div>
+
+          <div id="partnerDivisionList" class="partner-division-list">
+            <!-- Preenchido dinamicamente pelo code.js -->
+          </div>
+        </div>
+
+        <!-- 3. FICHA TÉCNICA & CALCULADORA DE CUSTO UNITÁRIO POR PALHA -->
+        <div class="ios-card finance-section-card">
+          <div class="label-row" style="margin-bottom: 12px;">
+            <span class="ios-section-label">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+              Ficha Técnica &amp; Custo Unitário
+            </span>
+          </div>
+
+          <!-- Resumo de Economia Unitária (3 Destaques) -->
+          <div class="unit-econ-strip">
+            <div class="unit-econ-box">
+              <span class="unit-econ-label">Custo / Palha</span>
+              <strong id="ftCustoUnitarioTotal" class="unit-econ-val">R$ 1,93</strong>
+              <span class="unit-econ-tag">100% do custo</span>
+            </div>
+            <div class="unit-econ-box">
+              <span class="unit-econ-label">Preço Médio</span>
+              <strong id="ftPrecoMedioVenda" class="unit-econ-val">R$ 10,00</strong>
+              <span class="unit-econ-tag">Praticado</span>
+            </div>
+            <div class="unit-econ-box unit-econ-highlight">
+              <span class="unit-econ-label">Lucro Bruto / un.</span>
+              <strong id="ftLucroBrutoUnitario" class="unit-econ-val">R$ 8,07</strong>
+              <span id="ftMargemBrutaPct" class="unit-econ-tag">Margem 80,7%</span>
+            </div>
+          </div>
+
+          <!-- Barra Visual de Composição de Custo -->
+          <div id="costCompositionBar" class="cost-composition-bar" aria-label="Composição percentual do custo"></div>
+
+          <!-- Lista de Componentes do Custo -->
+          <div id="techSheetItemsList" class="tech-sheet-list">
+            <!-- Preenchido dinamicamente pelo code.js -->
+          </div>
+        </div>
+
+      </section>
+
     </div>
 
     <!-- Barra de Navegação Inferior Estilo iPhone (iOS Tab Bar) -->
@@ -396,6 +586,22 @@
           <path d="M16 10a4 4 0 0 1-8 0"></path>
         </svg>
         <span>Vendas</span>
+      </button>
+
+      <button type="button" id="tabBtnFinance" class="tab-item" data-target="tabFinance">
+        <span id="financeTabLockBadge" class="tab-lock-badge" title="Faça login primeiro">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </span>
+        <!-- Ícone Gráfico / Gestão Financeira iOS -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+        <span>Gestão</span>
       </button>
     </nav>
   </main>

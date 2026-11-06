@@ -820,8 +820,8 @@ body {
   -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid rgba(78, 30, 14, 0.1);
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  padding: 6px 16px 14px;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 6px 12px 14px;
   z-index: 50;
 }
 
@@ -947,3 +947,517 @@ body {
 .hidden {
   display: none !important;
 }
+
+/* ==========================================================================
+   ABA 3: GESTÃO FINANCEIRA & PRECIFICAÇÃO (VISÃO GERAL)
+   ========================================================================== */
+.finance-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 2px 2px 0;
+}
+
+.finance-eyebrow {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cocoa-light);
+}
+
+.finance-main-title {
+  font-size: 1.28rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin-top: 2px;
+}
+
+.finance-sync-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 13px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(90, 32, 13, 0.16);
+  background: #FFF;
+  color: var(--cocoa-deep);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(56, 20, 8, 0.06);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.finance-sync-btn:active {
+  transform: scale(0.95);
+  background: var(--cream-soft);
+}
+
+.finance-sync-btn.loading svg {
+  animation: spin 0.75s linear infinite;
+}
+
+.finance-sync-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: -10px;
+  padding: 0 2px;
+}
+
+.sync-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #2E7D32;
+  box-shadow: 0 0 6px rgba(46, 125, 50, 0.5);
+}
+
+.sync-dot.syncing {
+  background-color: #D97706;
+  box-shadow: 0 0 6px rgba(217, 119, 6, 0.6);
+}
+
+/* Card Hero: Resolução Final do Acerto (Pix 50/50) */
+.settlement-hero-card {
+  background: linear-gradient(140deg, var(--cocoa-deep) 0%, #3E1508 100%);
+  color: #FFF;
+  border-radius: var(--radius-lg);
+  padding: 18px 18px;
+  box-shadow: 0 12px 30px rgba(59, 19, 6, 0.26);
+  border: 1px solid rgba(212, 163, 115, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.settlement-hero-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.settlement-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(212, 163, 115, 0.22);
+  color: #FDE68A;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.settlement-rule-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.settlement-hero-message {
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #FFFBEB;
+  background: rgba(255, 255, 255, 0.1);
+  border-left: 3.5px solid #FBBF24;
+  padding: 11px 13px;
+  border-radius: 10px;
+}
+
+.settlement-partners-strip {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.partner-balance-pill {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 9px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.partner-pill-name {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 500;
+}
+
+.partner-pill-val {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #FFF;
+}
+
+.partner-pill-val.val-positive {
+  color: #86EFAC;
+}
+
+.partner-pill-val.val-negative {
+  color: #FCA5A5;
+}
+
+/* Bento Grid 2x2: Painel de Indicadores Gerais */
+.finance-section-card {
+  padding: 18px 16px;
+}
+
+.kpi-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.kpi-bento-item {
+  background: var(--cream-bg);
+  border: 1px solid rgba(90, 32, 13, 0.08);
+  border-radius: 16px;
+  padding: 13px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.kpi-bento-item.kpi-status-positive {
+  background: #ECFDF5;
+  border-color: rgba(46, 125, 50, 0.2);
+}
+
+.kpi-bento-item.kpi-status-negative {
+  background: #FEF2F2;
+  border-color: rgba(211, 47, 47, 0.18);
+}
+
+.kpi-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.kpi-value {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin: 2px 0;
+}
+
+.kpi-bento-item.kpi-status-positive .kpi-value {
+  color: var(--ios-green);
+}
+
+.kpi-bento-item.kpi-status-negative .kpi-value {
+  color: var(--ios-red);
+}
+
+.kpi-sub {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  line-height: 1.25;
+}
+
+/* Detalhamento de Saídas */
+.outflows-breakdown-box {
+  margin-top: 12px;
+  background: var(--cream-soft);
+  border-radius: 14px;
+  padding: 11px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid rgba(90, 32, 13, 0.08);
+}
+
+.outflows-header {
+  font-size: 0.69rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cocoa-light);
+  margin-bottom: 2px;
+}
+
+.outflows-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.outflows-row strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.outflows-row.outflows-total {
+  margin-top: 3px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(90, 32, 13, 0.18);
+  font-weight: 700;
+  color: var(--cocoa-deep);
+}
+
+/* Divisão 50/50 & Acerto de Contas */
+.partner-division-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.partner-metric-card {
+  background: var(--cream-bg);
+  border: 1px solid rgba(90, 32, 13, 0.08);
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.partner-metric-card.highlight- profit {
+  background: #F0FDF4;
+  border-color: rgba(46, 125, 50, 0.2);
+}
+
+.partner-metric-card.highlight-settlement {
+  background: #FFFBEB;
+  border-color: rgba(217, 119, 6, 0.25);
+}
+
+.partner-metric-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.partner-metric-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.partner-metric-obs {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.partner-rule-pill {
+  font-size: 0.66rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(90, 32, 13, 0.08);
+  color: var(--cocoa-deep);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.partner-values-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  background: #FFF;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(90, 32, 13, 0.06);
+}
+
+.partner-val-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.partner-val-col span {
+  font-size: 0.66rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.partner-val-col strong {
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.partner-val-col strong.text-pos {
+  color: var(--ios-green);
+}
+
+.partner-val-col strong.text-neg {
+  color: var(--ios-red);
+}
+
+/* Ficha Técnica & Custo Unitário */
+.unit-econ-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.unit-econ-box {
+  background: var(--cream-bg);
+  border: 1px solid rgba(90, 32, 13, 0.08);
+  border-radius: 14px;
+  padding: 10px 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.unit-econ-box.unit-econ-highlight {
+  background: #ECFDF5;
+  border-color: rgba(46, 125, 50, 0.24);
+}
+
+.unit-econ-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.unit-econ-val {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--cocoa-deep);
+}
+
+.unit-econ-box.unit-econ-highlight .unit-econ-val {
+  color: var(--ios-green);
+}
+
+.unit-econ-tag {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.unit-econ-box.unit-econ-highlight .unit-econ-tag {
+  color: var(--ios-green);
+}
+
+/* Barra Visual de Composição de Custo */
+.cost-composition-bar {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--cream-soft);
+  overflow: hidden;
+  display: flex;
+  gap: 2px;
+  margin: 14px 0 12px;
+}
+
+.cost-bar-segment {
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.tech-sheet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.tech-item-card {
+  background: var(--cream-bg);
+  border: 1px solid rgba(90, 32, 13, 0.08);
+  border-radius: 13px;
+  padding: 11px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.tech-item-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tech-item-title-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.tech-color-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.tech-item-name {
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.tech-item-desc {
+  font-size: 0.71rem;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}
+
+.tech-item-unit-badge {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.tech-item-unit-cost {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--cocoa-deep);
+}
+
+.tech-item-pct {
+  display: block;
+  font-size: 0.67rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.tech-item-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.71rem;
+  color: var(--text-secondary);
+  padding-top: 6px;
+  border-top: 1px dashed rgba(90, 32, 13, 0.1);
+}
+
