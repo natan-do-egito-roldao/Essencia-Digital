@@ -32,11 +32,14 @@ const headerSellerName = document.getElementById("headerSellerName");
 
 const tabBtnLogin = document.getElementById("tabBtnLogin");
 const tabBtnSales = document.getElementById("tabBtnSales");
+const tabBtnExpenses = document.getElementById("tabBtnExpenses");
 const tabBtnFinance = document.getElementById("tabBtnFinance");
 const tabLogin = document.getElementById("tabLogin");
 const tabSales = document.getElementById("tabSales");
+const tabExpenses = document.getElementById("tabExpenses");
 const tabFinance = document.getElementById("tabFinance");
 const salesTabLockBadge = document.getElementById("salesTabLockBadge");
+const expensesTabLockBadge = document.getElementById("expensesTabLockBadge");
 const financeTabLockBadge = document.getElementById("financeTabLockBadge");
 
 // Login
@@ -49,6 +52,7 @@ const loginErrorMsg = document.getElementById("loginErrorMsg");
 const sellerAvatarInitial = document.getElementById("sellerAvatarInitial");
 const loggedSellerName = document.getElementById("loggedSellerName");
 const goToSalesBtn = document.getElementById("goToSalesBtn");
+const goToExpensesBtn = document.getElementById("goToExpensesBtn");
 const goToFinanceBtn = document.getElementById("goToFinanceBtn");
 const logoutSellerBtn = document.getElementById("logoutSellerBtn");
 
@@ -123,10 +127,13 @@ function mostrarNotificacao(mensagem, tipo = "success") {
 }
 
 // ============================================================================
-// NAVEGAÇÃO ENTRE ABAS (1ª ABA: LOGIN | 2ª ABA: VENDAS | 3ª ABA: GESTÃO)
+// NAVEGAÇÃO ENTRE ABAS (1ª: LOGIN | 2ª: VENDAS | 3ª: DESPESAS | 4ª: GESTÃO)
 // ============================================================================
 function alternarAba(abaDestino) {
-  if ((abaDestino === "tabSales" || abaDestino === "tabFinance") && !appState.vendedorLogado) {
+  if (
+    (abaDestino === "tabSales" || abaDestino === "tabExpenses" || abaDestino === "tabFinance") &&
+    !appState.vendedorLogado
+  ) {
     mostrarNotificacao("Digite a senha do vendedor para acessar o painel", "error");
     sellerPasswordInput.focus();
     return;
@@ -134,22 +141,27 @@ function alternarAba(abaDestino) {
 
   tabLogin.classList.toggle("active", abaDestino === "tabLogin");
   tabSales.classList.toggle("active", abaDestino === "tabSales");
+  if (tabExpenses) tabExpenses.classList.toggle("active", abaDestino === "tabExpenses");
   tabFinance.classList.toggle("active", abaDestino === "tabFinance");
 
   tabBtnLogin.classList.toggle("active", abaDestino === "tabLogin");
   tabBtnSales.classList.toggle("active", abaDestino === "tabSales");
+  if (tabBtnExpenses) tabBtnExpenses.classList.toggle("active", abaDestino === "tabExpenses");
   tabBtnFinance.classList.toggle("active", abaDestino === "tabFinance");
 
-  // Header mais compacto nas telas de Vendas e Gestão
+  // Header mais compacto nas telas operacionais
   brandHeader.classList.toggle("compact", abaDestino !== "tabLogin");
 
-  if (abaDestino === "tabFinance") {
+  if (abaDestino === "tabFinance" || abaDestino === "tabExpenses") {
     carregarDadosGestao(false);
   }
 }
 
 tabBtnLogin.addEventListener("click", () => alternarAba("tabLogin"));
 tabBtnSales.addEventListener("click", () => alternarAba("tabSales"));
+if (tabBtnExpenses) {
+  tabBtnExpenses.addEventListener("click", () => alternarAba("tabExpenses"));
+}
 tabBtnFinance.addEventListener("click", () => alternarAba("tabFinance"));
 
 // ============================================================================
@@ -185,6 +197,9 @@ function atualizarInterfaceVendedor() {
   loggedSellerCard.classList.toggle("hidden", !logado);
   headerSellerPill.classList.toggle("hidden", !logado);
   salesTabLockBadge.classList.toggle("hidden", logado);
+  if (expensesTabLockBadge) {
+    expensesTabLockBadge.classList.toggle("hidden", logado);
+  }
   if (financeTabLockBadge) {
     financeTabLockBadge.classList.toggle("hidden", logado);
   }
@@ -194,6 +209,9 @@ function atualizarInterfaceVendedor() {
     loggedSellerName.textContent = appState.vendedorLogado;
     sellerAvatarInitial.textContent = appState.vendedorLogado.charAt(0).toUpperCase();
     summarySeller.textContent = appState.vendedorLogado;
+    if (typeof selecionarPagadorDespesa === "function") {
+      selecionarPagadorDespesa(appState.vendedorLogado);
+    }
   }
 }
 
@@ -232,6 +250,9 @@ togglePassBtn.addEventListener("click", () => {
 });
 
 goToSalesBtn.addEventListener("click", () => alternarAba("tabSales"));
+if (goToExpensesBtn) {
+  goToExpensesBtn.addEventListener("click", () => alternarAba("tabExpenses"));
+}
 if (goToFinanceBtn) {
   goToFinanceBtn.addEventListener("click", () => alternarAba("tabFinance"));
 }
@@ -786,6 +807,9 @@ function carregarDadosGestao(exibirToast = true) {
     })
     .then((data) => {
       const payloadGestao = data && data.gestao ? data.gestao : data;
+      if (data && data.despesas) {
+        renderizarPainelDespesas(data.despesas);
+      }
       if (payloadGestao && (payloadGestao.indicadores || payloadGestao.fichaTecnica)) {
         renderizarPainelGestao(payloadGestao);
         const hora = new Date().toLocaleTimeString("pt-BR", {
@@ -796,7 +820,7 @@ function carregarDadosGestao(exibirToast = true) {
           financeLastSyncText.textContent = `Sincronizado com "Visão Geral" às ${hora}`;
         }
         if (exibirToast) {
-          mostrarNotificacao("Painel financeiro atualizado com a planilha!", "success");
+          mostrarNotificacao("Planilha sincronizada com sucesso!", "success");
         }
       } else {
         throw new Error("A planilha ainda não retornou os dados da aba Visão Geral.");
@@ -820,6 +844,10 @@ function carregarDadosGestao(exibirToast = true) {
       if (refreshFinanceBtn) refreshFinanceBtn.classList.remove("loading");
       if (syncBtnLabel) syncBtnLabel.textContent = "Atualizar";
       if (financeSyncDot) financeSyncDot.classList.remove("syncing");
+      const refreshExpensesBtnEl = document.getElementById("refreshExpensesBtn");
+      const syncExpensesBtnLabelEl = document.getElementById("syncExpensesBtnLabel");
+      if (refreshExpensesBtnEl) refreshExpensesBtnEl.classList.remove("loading");
+      if (syncExpensesBtnLabelEl) syncExpensesBtnLabelEl.textContent = "Atualizar";
     });
 }
 
@@ -827,7 +855,673 @@ if (refreshFinanceBtn) {
   refreshFinanceBtn.addEventListener("click", () => carregarDadosGestao(true));
 }
 
+// ============================================================================
+// ABA 3: CONTROLE DE INSUMOS E DESPESAS (ABA "INSUMOS E DESPESAS")
+// ============================================================================
+const SUGESTOES_POR_CATEGORIA = {
+  "Ingredientes": [
+    { texto: "Leite Condensado (Caixa c/ 27 un)", qtd: 27, valor: 135.00, obs: "Comprado no Atacadão" },
+    { texto: "Biscoito Maisena (Pacote 400g)", qtd: 4, valor: 28.00, obs: "Supermercado local" },
+    { texto: "Chocolate em Pó 50% (1kg)", qtd: 1, valor: 38.50, obs: "Loja de confeitaria" },
+    { texto: "Manteiga sem sal (500g)", qtd: 2, valor: 32.00, obs: "Para a base de brigadeiro" },
+    { texto: "Leite Ninho em Pó (Lata 380g)", qtd: 1, valor: 22.00, obs: "Supermercado local" }
+  ],
+  "Embalagens": [
+    { texto: "Saquinhos Celofane (Pacote c/ 100)", qtd: 100, valor: 18.00, obs: "Embalagem individual" },
+    { texto: "Rolo de Fitilho / Fita Cetim", qtd: 1, valor: 12.00, obs: "Loja de confeitaria" },
+    { texto: "Forminhas / Tapetinhos para doce", qtd: 100, valor: 9.50, obs: "Loja de embalagens" }
+  ],
+  "Adesivos": [
+    { texto: "Adesivos com Logo da Marca (100 un)", qtd: 100, valor: 25.00, obs: "Gráfica rápida" },
+    { texto: "Tag Personalizada La Dolce (100 un)", qtd: 100, valor: 30.00, obs: "Gráfica rápida" }
+  ],
+  "Alimentação/Água": [
+    { texto: "Marmita almoço + Água mineral", qtd: 2, valor: 42.00, obs: "Almoço durante produção/vendas" },
+    { texto: "Água mineral para turno de vendas", qtd: 2, valor: 8.00, obs: "Durante vendas na rua" },
+    { texto: "Lanche rápido da equipe", qtd: 2, valor: 24.00, obs: "Turno de vendas" }
+  ],
+  "Transporte": [
+    { texto: "Combustível / Deslocamento entregas", qtd: 1, valor: 20.00, obs: "Entrega nos pontos parceiros" },
+    { texto: "Uber / 99 para busca de insumos", qtd: 1, valor: 18.00, obs: "Ida ao atacado" },
+    { texto: "Estacionamento / Pedágio", qtd: 1, valor: 10.00, obs: "Rota de entregas" }
+  ],
+  "Outros": [
+    { texto: "Proporcional Gás de Cozinha / Energia", qtd: 1, valor: 15.00, obs: "Custo indireto de produção" },
+    { texto: "Espátula de Silicone / Panela", qtd: 1, valor: 35.00, obs: "Utensílio de cozinha" },
+    { texto: "Touca descartável / Luvas / Álcool", qtd: 1, valor: 16.00, obs: "Higiene na produção" }
+  ]
+};
+
+// Dados iniciais espelhados exatamente da aba "Insumos e Despesas" da planilha
+const DADOS_DESPESAS_PADRAO = {
+  itens: [
+    {
+      linha: 2,
+      data: "01/11/2026",
+      categoria: "Ingredientes",
+      descricao: "Leite Condensado (Caixa c/ 27 un)",
+      quantidade: 27,
+      valorTotal: "R$ 135,00",
+      valorNumerico: 135.00,
+      pagoPor: "João",
+      tipoGasto: "Insumo Direto",
+      observacoes: "Comprado no Atacadão"
+    },
+    {
+      linha: 3,
+      data: "01/11/2026",
+      categoria: "Ingredientes",
+      descricao: "Biscoito Maisena (Pacote 400g)",
+      quantidade: 4,
+      valorTotal: "R$ 28,00",
+      valorNumerico: 28.00,
+      pagoPor: "Natan",
+      tipoGasto: "Insumo Direto",
+      observacoes: "Supermercado local"
+    },
+    {
+      linha: 4,
+      data: "02/11/2026",
+      categoria: "Ingredientes",
+      descricao: "Chocolate em Pó 50% (1kg)",
+      quantidade: 1,
+      valorTotal: "R$ 38,50",
+      valorNumerico: 38.50,
+      pagoPor: "João",
+      tipoGasto: "Insumo Direto",
+      observacoes: "Loja de confeitaria"
+    },
+    {
+      linha: 5,
+      data: "02/11/2026",
+      categoria: "Ingredientes",
+      descricao: "Manteiga sem sal (500g)",
+      quantidade: 2,
+      valorTotal: "R$ 32,00",
+      valorNumerico: 32.00,
+      pagoPor: "Natan",
+      tipoGasto: "Insumo Direto",
+      observacoes: "Para a base de brigadeiro"
+    },
+    {
+      linha: 6,
+      data: "02/11/2026",
+      categoria: "Embalagens",
+      descricao: "Saquinhos Celofane (Pacote c/ 100)",
+      quantidade: 100,
+      valorTotal: "R$ 18,00",
+      valorNumerico: 18.00,
+      pagoPor: "João",
+      tipoGasto: "Insumo Direto",
+      observacoes: "Embalagem individual"
+    },
+    {
+      linha: 7,
+      data: "02/11/2026",
+      categoria: "Adesivos",
+      descricao: "Adesivos com Logo da Marca (100 un)",
+      quantidade: 100,
+      valorTotal: "R$ 25,00",
+      valorNumerico: 25.00,
+      pagoPor: "Natan",
+      tipoGasto: "Insumo Direto",
+      observacoes: "Gráfica rápida"
+    },
+    {
+      linha: 8,
+      data: "03/11/2026",
+      categoria: "Alimentação/Água",
+      descricao: "Marmita almoço + Água mineral",
+      quantidade: 2,
+      valorTotal: "R$ 42,00",
+      valorNumerico: 42.00,
+      pagoPor: "João",
+      tipoGasto: "Gasto Esporádico",
+      observacoes: "Almoço durante produção/vendas"
+    },
+    {
+      linha: 9,
+      data: "03/11/2026",
+      categoria: "Transporte",
+      descricao: "Combustível / Deslocamento entregas",
+      quantidade: 1,
+      valorTotal: "R$ 20,00",
+      valorNumerico: 20.00,
+      pagoPor: "Natan",
+      tipoGasto: "Gasto Esporádico",
+      observacoes: "Entrega nos pontos parceiros"
+    }
+  ],
+  resumo: {
+    totalGeral: 338.50,
+    insumosDiretos: 276.50,
+    gastosEsporadicos: 62.00,
+    pagoJoao: 233.50,
+    pagoNatan: 105.00,
+    quantidadeLancamentos: 8
+  }
+};
+
+const expenseState = {
+  categoria: "Ingredientes",
+  descricao: "",
+  quantidade: 1,
+  valorTotal: 0,
+  pagoPor: "Natan",
+  tipoGasto: "Insumo Direto",
+  observacoes: "",
+  filtroHistorico: "todos",
+  enviando: false,
+  dadosAtuais: JSON.parse(JSON.stringify(DADOS_DESPESAS_PADRAO))
+};
+
+// Elementos da Aba de Despesas
+const refreshExpensesBtn = document.getElementById("refreshExpensesBtn");
+const syncExpensesBtnLabel = document.getElementById("syncExpensesBtnLabel");
+const segBtnNewExpense = document.getElementById("segBtnNewExpense");
+const segBtnHistoryExpense = document.getElementById("segBtnHistoryExpense");
+const segHistoryCount = document.getElementById("segHistoryCount");
+const expenseFormView = document.getElementById("expenseFormView");
+const expenseHistoryView = document.getElementById("expenseHistoryView");
+
+const expenseForm = document.getElementById("expenseForm");
+const expCategoryCards = document.querySelectorAll(".exp-cat-card");
+const expCategoryAutoHint = document.getElementById("expCategoryAutoHint");
+const expDescInput = document.getElementById("expDescInput");
+const expQuickItemChips = document.getElementById("expQuickItemChips");
+const expTotalValueInput = document.getElementById("expTotalValueInput");
+const expValChips = document.querySelectorAll(".exp-val-chip");
+const expQtyMinusBtn = document.getElementById("expQtyMinusBtn");
+const expQtyPlusBtn = document.getElementById("expQtyPlusBtn");
+const expQtyInput = document.getElementById("expQtyInput");
+const expQtyChips = document.querySelectorAll(".exp-qty-chip");
+const expCalculatedUnitCost = document.getElementById("expCalculatedUnitCost");
+const payerOptionBtns = document.querySelectorAll(".payer-option-btn");
+const expTypeCards = document.querySelectorAll(".exp-type-card");
+const expObsInput = document.getElementById("expObsInput");
+const expObsChips = document.querySelectorAll(".exp-obs-chip");
+
+const expSummaryCatType = document.getElementById("expSummaryCatType");
+const expSummaryItem = document.getElementById("expSummaryItem");
+const expSummaryPayer = document.getElementById("expSummaryPayer");
+const expSummaryReimbursement = document.getElementById("expSummaryReimbursement");
+const expSummaryQtyLabel = document.getElementById("expSummaryQtyLabel");
+const expSummaryTotalVal = document.getElementById("expSummaryTotalVal");
+const submitExpenseBtn = document.getElementById("submitExpenseBtn");
+
+const expFilterPills = document.querySelectorAll(".exp-filter-pill");
+const expensesHistoryList = document.getElementById("expensesHistoryList");
+
+function alternarSubViewDespesas(modo) {
+  const isNovo = modo === "novo";
+  if (segBtnNewExpense) {
+    segBtnNewExpense.classList.toggle("active", isNovo);
+    segBtnNewExpense.setAttribute("aria-selected", String(isNovo));
+  }
+  if (segBtnHistoryExpense) {
+    segBtnHistoryExpense.classList.toggle("active", !isNovo);
+    segBtnHistoryExpense.setAttribute("aria-selected", String(!isNovo));
+  }
+  if (expenseFormView) expenseFormView.classList.toggle("hidden", !isNovo);
+  if (expenseHistoryView) expenseHistoryView.classList.toggle("hidden", isNovo);
+}
+
+if (segBtnNewExpense) {
+  segBtnNewExpense.addEventListener("click", () => alternarSubViewDespesas("novo"));
+}
+if (segBtnHistoryExpense) {
+  segBtnHistoryExpense.addEventListener("click", () => alternarSubViewDespesas("historico"));
+}
+
+if (refreshExpensesBtn) {
+  refreshExpensesBtn.addEventListener("click", () => {
+    refreshExpensesBtn.classList.add("loading");
+    if (syncExpensesBtnLabel) syncExpensesBtnLabel.textContent = "Sincronizando...";
+    carregarDadosGestao(true);
+  });
+}
+
+function selecionarTipoGasto(tipo) {
+  expenseState.tipoGasto = tipo;
+  expTypeCards.forEach((card) => {
+    card.classList.toggle("selected", card.dataset.exptype === tipo);
+  });
+  if (expCategoryAutoHint) {
+    expCategoryAutoHint.textContent = tipo;
+    expCategoryAutoHint.classList.toggle("sporadic", tipo === "Gasto Esporádico");
+  }
+  atualizarResumoDespesa();
+}
+
+function selecionarPagadorDespesa(pagador) {
+  expenseState.pagoPor = pagador;
+  payerOptionBtns.forEach((btn) => {
+    btn.classList.toggle("selected", btn.dataset.payer === pagador);
+  });
+  atualizarResumoDespesa();
+}
+
+function renderizarSugestoesCategoria(categoria) {
+  if (!expQuickItemChips) return;
+  const lista = SUGESTOES_POR_CATEGORIA[categoria] || [];
+  expQuickItemChips.innerHTML = lista
+    .map(
+      (sug, i) => `
+      <button type="button" class="chip-btn exp-sug-chip" data-idx="${i}">
+        ${sug.texto}
+      </button>
+    `
+    )
+    .join("");
+
+  expQuickItemChips.querySelectorAll(".exp-sug-chip").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const sug = lista[Number(btn.dataset.idx)];
+      if (!sug) return;
+
+      expenseState.descricao = sug.texto;
+      if (expDescInput) expDescInput.value = sug.texto;
+
+      definirQuantidadeDespesa(sug.qtd || 1);
+
+      if (sug.valor) {
+        expenseState.valorTotal = sug.valor;
+        if (expTotalValueInput) expTotalValueInput.value = sug.valor.toFixed(2);
+        expValChips.forEach((c) => {
+          c.classList.toggle("active", parseFloat(c.dataset.val) === sug.valor);
+        });
+      }
+
+      if (sug.obs && expObsInput) {
+        expenseState.observacoes = sug.obs;
+        expObsInput.value = sug.obs;
+      }
+
+      expQuickItemChips.querySelectorAll(".exp-sug-chip").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      atualizarResumoDespesa();
+    });
+  });
+}
+
+expCategoryCards.forEach((card) => {
+  card.addEventListener("click", () => {
+    expCategoryCards.forEach((c) => c.classList.remove("selected"));
+    card.classList.add("selected");
+
+    const cat = card.dataset.category;
+    const defaultType = card.dataset.defaultType || "Insumo Direto";
+    expenseState.categoria = cat;
+
+    selecionarTipoGasto(defaultType);
+    renderizarSugestoesCategoria(cat);
+    atualizarResumoDespesa();
+  });
+});
+
+if (expDescInput) {
+  expDescInput.addEventListener("input", () => {
+    expenseState.descricao = expDescInput.value.trim();
+    atualizarResumoDespesa();
+  });
+}
+
+function definirQuantidadeDespesa(novaQtd) {
+  const qtd = Math.max(1, Math.min(9999, parseInt(novaQtd, 10) || 1));
+  expenseState.quantidade = qtd;
+  if (expQtyInput) expQtyInput.value = qtd;
+
+  expQtyChips.forEach((chip) => {
+    chip.classList.toggle("active", parseInt(chip.dataset.qty, 10) === qtd);
+  });
+
+  atualizarResumoDespesa();
+}
+
+if (expQtyMinusBtn) {
+  expQtyMinusBtn.addEventListener("click", () => definirQuantidadeDespesa(expenseState.quantidade - 1));
+}
+if (expQtyPlusBtn) {
+  expQtyPlusBtn.addEventListener("click", () => definirQuantidadeDespesa(expenseState.quantidade + 1));
+}
+if (expQtyInput) {
+  expQtyInput.addEventListener("input", () => {
+    const val = parseInt(expQtyInput.value, 10);
+    if (val > 0) {
+      expenseState.quantidade = val;
+      expQtyChips.forEach((chip) => {
+        chip.classList.toggle("active", parseInt(chip.dataset.qty, 10) === val);
+      });
+      atualizarResumoDespesa();
+    }
+  });
+}
+
+expQtyChips.forEach((chip) => {
+  chip.addEventListener("click", () => definirQuantidadeDespesa(parseInt(chip.dataset.qty, 10)));
+});
+
+if (expTotalValueInput) {
+  expTotalValueInput.addEventListener("input", () => {
+    const val = parseFloat(expTotalValueInput.value);
+    expenseState.valorTotal = isNaN(val) || val < 0 ? 0 : val;
+    expValChips.forEach((c) => {
+      c.classList.toggle("active", parseFloat(c.dataset.val) === expenseState.valorTotal);
+    });
+    atualizarResumoDespesa();
+  });
+}
+
+expValChips.forEach((chip) => {
+  chip.addEventListener("click", () => {
+    const val = parseFloat(chip.dataset.val);
+    expenseState.valorTotal = val;
+    if (expTotalValueInput) expTotalValueInput.value = val.toFixed(2);
+    expValChips.forEach((c) => c.classList.remove("active"));
+    chip.classList.add("active");
+    atualizarResumoDespesa();
+  });
+});
+
+payerOptionBtns.forEach((btn) => {
+  btn.addEventListener("click", () => selecionarPagadorDespesa(btn.dataset.payer));
+});
+
+expTypeCards.forEach((card) => {
+  card.addEventListener("click", () => selecionarTipoGasto(card.dataset.exptype));
+});
+
+if (expObsInput) {
+  expObsInput.addEventListener("input", () => {
+    expenseState.observacoes = expObsInput.value;
+  });
+}
+
+expObsChips.forEach((chip) => {
+  chip.addEventListener("click", () => {
+    expenseState.observacoes = chip.dataset.obs;
+    if (expObsInput) expObsInput.value = chip.dataset.obs;
+    expObsChips.forEach((c) => c.classList.remove("active"));
+    chip.classList.add("active");
+  });
+});
+
+function atualizarResumoDespesa() {
+  const qtd = Math.max(1, expenseState.quantidade);
+  const total = Math.max(0, expenseState.valorTotal);
+  const unitario = total / qtd;
+  const metadeCredito = total / 2;
+
+  if (expCalculatedUnitCost) {
+    expCalculatedUnitCost.textContent = `${formatarMoeda(unitario)} / un.`;
+  }
+  if (expSummaryCatType) {
+    expSummaryCatType.textContent = `${expenseState.categoria} • ${expenseState.tipoGasto}`;
+  }
+  if (expSummaryItem) {
+    expSummaryItem.textContent = expenseState.descricao || "—";
+  }
+  if (expSummaryPayer) {
+    expSummaryPayer.textContent = expenseState.pagoPor;
+  }
+  if (expSummaryReimbursement) {
+    expSummaryReimbursement.textContent = `+${formatarMoeda(metadeCredito)} a favor de ${expenseState.pagoPor}`;
+  }
+  if (expSummaryQtyLabel) {
+    expSummaryQtyLabel.textContent = `Saída Total (${qtd} ${qtd === 1 ? "un." : "unid."})`;
+  }
+  if (expSummaryTotalVal) {
+    expSummaryTotalVal.textContent = formatarMoeda(total);
+  }
+}
+
+function renderizarPainelDespesas(dadosDespesas) {
+  if (!dadosDespesas || !Array.isArray(dadosDespesas.itens)) return;
+
+  expenseState.dadosAtuais = dadosDespesas;
+  const itens = dadosDespesas.itens;
+  const res = dadosDespesas.resumo || {
+    totalGeral: 0,
+    insumosDiretos: 0,
+    gastosEsporadicos: 0,
+    pagoJoao: 0,
+    pagoNatan: 0,
+    quantidadeLancamentos: itens.length
+  };
+
+  const expTotalGeralVal = document.getElementById("expTotalGeralVal");
+  const expCountBadge = document.getElementById("expCountBadge");
+  const expTotalInsumosVal = document.getElementById("expTotalInsumosVal");
+  const expTotalEsporadicosVal = document.getElementById("expTotalEsporadicosVal");
+  const expPagoJoaoVal = document.getElementById("expPagoJoaoVal");
+  const expPagoNatanVal = document.getElementById("expPagoNatanVal");
+
+  if (expTotalGeralVal) expTotalGeralVal.textContent = formatarMoeda(res.totalGeral);
+  if (expCountBadge) {
+    const n = res.quantidadeLancamentos || itens.length;
+    expCountBadge.textContent = `${n} ${n === 1 ? "lançamento" : "lançamentos"}`;
+  }
+  if (segHistoryCount) {
+    segHistoryCount.textContent = String(res.quantidadeLancamentos || itens.length);
+  }
+  if (expTotalInsumosVal) expTotalInsumosVal.textContent = formatarMoeda(res.insumosDiretos);
+  if (expTotalEsporadicosVal) expTotalEsporadicosVal.textContent = formatarMoeda(res.gastosEsporadicos);
+  if (expPagoJoaoVal) expPagoJoaoVal.textContent = formatarMoeda(res.pagoJoao);
+  if (expPagoNatanVal) expPagoNatanVal.textContent = formatarMoeda(res.pagoNatan);
+
+  renderizarListaHistoricoDespesas();
+}
+
+function renderizarListaHistoricoDespesas() {
+  if (!expensesHistoryList) return;
+  const todosItens = (expenseState.dadosAtuais && expenseState.dadosAtuais.itens) || [];
+  const filtro = expenseState.filtroHistorico;
+
+  const filtrados = todosItens
+    .slice()
+    .reverse()
+    .filter((item) => {
+      if (filtro === "todos") return true;
+      if (filtro === "Insumo Direto" || filtro === "Gasto Esporádico") {
+        return String(item.tipoGasto).toLowerCase() === filtro.toLowerCase();
+      }
+      return String(item.pagoPor).toLowerCase() === filtro.toLowerCase();
+    });
+
+  if (filtrados.length === 0) {
+    expensesHistoryList.innerHTML = `
+      <div style="text-align: center; padding: 24px 12px; color: var(--text-muted); font-size: 0.84rem;">
+        Nenhuma despesa encontrada para este filtro.
+      </div>
+    `;
+    return;
+  }
+
+  expensesHistoryList.innerHTML = filtrados
+    .map((item) => {
+      const isSporadic = String(item.tipoGasto).toLowerCase().includes("espor");
+      const valorExibido =
+        item.valorTotal && String(item.valorTotal).includes("R$")
+          ? item.valorTotal
+          : formatarMoeda(item.valorNumerico || 0);
+
+      return `
+        <div class="expense-history-item">
+          <div class="expense-history-top">
+            <div class="expense-history-title">${item.descricao}</div>
+            <div class="expense-history-val">${valorExibido}</div>
+          </div>
+          <div class="expense-history-badges">
+            <span class="exp-badge">${item.categoria}</span>
+            <span class="exp-badge ${isSporadic ? "sporadic" : "direct"}">${item.tipoGasto}</span>
+            <span class="exp-badge payer">Pago por ${item.pagoPor}</span>
+            <span class="exp-badge">Qtd: ${item.quantidade}</span>
+          </div>
+          <div class="expense-history-footer">
+            <span>📅 ${item.data}</span>
+            <span>${item.observacoes ? `📍 ${item.observacoes}` : `Linha ${item.linha || "—"}`}</span>
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+expFilterPills.forEach((pill) => {
+  pill.addEventListener("click", () => {
+    expFilterPills.forEach((p) => p.classList.remove("active"));
+    pill.classList.add("active");
+    expenseState.filtroHistorico = pill.dataset.filter;
+    renderizarListaHistoricoDespesas();
+  });
+});
+
+// Envio do Formulário de Nova Despesa para a Planilha ("Insumos e Despesas")
+if (expenseForm) {
+  expenseForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (expenseState.enviando) return;
+
+    if (!appState.vendedorLogado) {
+      mostrarNotificacao("Faça login com sua senha primeiro!", "error");
+      alternarAba("tabLogin");
+      return;
+    }
+
+    const descricao = (expDescInput ? expDescInput.value : expenseState.descricao).trim();
+    if (!descricao) {
+      mostrarNotificacao("Informe o que foi comprado (Item / Descrição)", "error");
+      if (expDescInput) expDescInput.focus();
+      return;
+    }
+
+    const valorTotal = parseFloat(expTotalValueInput ? expTotalValueInput.value : expenseState.valorTotal);
+    if (isNaN(valorTotal) || valorTotal <= 0) {
+      mostrarNotificacao("Informe o valor total pago na compra", "error");
+      if (expTotalValueInput) expTotalValueInput.focus();
+      return;
+    }
+
+    const quantidade = Math.max(1, parseInt(expQtyInput ? expQtyInput.value : expenseState.quantidade, 10) || 1);
+    const observacoes = (expObsInput ? expObsInput.value : expenseState.observacoes).trim();
+
+    const payloadDespesa = {
+      acao: "registrarDespesa",
+      tipoRegistro: "despesa",
+      categoria: expenseState.categoria,
+      descricao: descricao,
+      quantidade: quantidade,
+      valorTotal: Number(valorTotal.toFixed(2)),
+      pagoPor: expenseState.pagoPor,
+      tipoGasto: expenseState.tipoGasto,
+      observacoes: observacoes
+    };
+
+    expenseState.enviando = true;
+    submitExpenseBtn.disabled = true;
+    const btnOriginal = submitExpenseBtn.innerHTML;
+    submitExpenseBtn.innerHTML = `<div class="spinner"></div><span>Salvando na aba Insumos e Despesas...</span>`;
+
+    fetch(urlPlanilha, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(payloadDespesa)
+    })
+      .then(async (response) => {
+        const texto = await response.text();
+        let data;
+        try {
+          data = JSON.parse(texto);
+        } catch {
+          throw new Error(
+            "O Google Apps Script não retornou JSON válido. Atualize o código no Apps Script com a nova função registrarNovaDespesa."
+          );
+        }
+        if (data.status && data.status !== "sucesso" && data.status !== "ok") {
+          throw new Error(data.mensagem || "Erro ao salvar despesa na planilha.");
+        }
+        return data;
+      })
+      .then((data) => {
+        const localStr = data && data.aba && data.linha ? ` (${data.aba}, linha ${data.linha})` : "";
+        mostrarNotificacao(
+          `Despesa de ${formatarMoeda(valorTotal)} registrada${localStr}!`,
+          "success"
+        );
+
+        // Se o backend retornou a lista atualizada de despesas e gestão, usa direto
+        if (data && data.despesas) {
+          renderizarPainelDespesas(data.despesas);
+        } else {
+          // Atualização otimista local caso o script antigo ainda esteja publicado
+          const hoje = new Date().toLocaleDateString("pt-BR");
+          expenseState.dadosAtuais.itens.push({
+            linha: expenseState.dadosAtuais.itens.length + 2,
+            data: hoje,
+            categoria: payloadDespesa.categoria,
+            descricao: payloadDespesa.descricao,
+            quantidade: payloadDespesa.quantidade,
+            valorTotal: formatarMoeda(payloadDespesa.valorTotal),
+            valorNumerico: payloadDespesa.valorTotal,
+            pagoPor: payloadDespesa.pagoPor,
+            tipoGasto: payloadDespesa.tipoGasto,
+            observacoes: payloadDespesa.observacoes
+          });
+          expenseState.dadosAtuais.resumo.totalGeral += payloadDespesa.valorTotal;
+          expenseState.dadosAtuais.resumo.quantidadeLancamentos += 1;
+          if (payloadDespesa.tipoGasto === "Gasto Esporádico") {
+            expenseState.dadosAtuais.resumo.gastosEsporadicos += payloadDespesa.valorTotal;
+          } else {
+            expenseState.dadosAtuais.resumo.insumosDiretos += payloadDespesa.valorTotal;
+          }
+          if (payloadDespesa.pagoPor === "João") {
+            expenseState.dadosAtuais.resumo.pagoJoao += payloadDespesa.valorTotal;
+          } else {
+            expenseState.dadosAtuais.resumo.pagoNatan += payloadDespesa.valorTotal;
+          }
+          renderizarPainelDespesas(expenseState.dadosAtuais);
+        }
+
+        if (data && data.gestao) {
+          renderizarPainelGestao(data.gestao);
+        } else {
+          carregarDadosGestao(false);
+        }
+
+        // Limpa os campos para o próximo lançamento mantendo categoria e pagador
+        expenseState.descricao = "";
+        expenseState.valorTotal = 0;
+        expenseState.observacoes = "";
+        if (expDescInput) expDescInput.value = "";
+        if (expTotalValueInput) expTotalValueInput.value = "";
+        if (expObsInput) expObsInput.value = "";
+        expValChips.forEach((c) => c.classList.remove("active"));
+        expObsChips.forEach((c) => c.classList.remove("active"));
+        definirQuantidadeDespesa(1);
+        renderizarSugestoesCategoria(expenseState.categoria);
+      })
+      .catch((error) => {
+        console.error("Erro ao registrar despesa:", error);
+        mostrarNotificacao(
+          error.message || "Erro ao conectar com a planilha. Verifique o Apps Script.",
+          "error"
+        );
+      })
+      .finally(() => {
+        expenseState.enviando = false;
+        submitExpenseBtn.disabled = false;
+        submitExpenseBtn.innerHTML = btnOriginal;
+      });
+  });
+}
+
 // Inicialização
 atualizarInterfaceVendedor();
 atualizarResumoVenda();
+renderizarSugestoesCategoria(expenseState.categoria);
+atualizarResumoDespesa();
+renderizarPainelDespesas(DADOS_DESPESAS_PADRAO);
 renderizarPainelGestao(DADOS_FINANCEIROS_PADRAO);

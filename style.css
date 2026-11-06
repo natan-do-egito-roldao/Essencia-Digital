@@ -820,8 +820,8 @@ body {
   -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid rgba(78, 30, 14, 0.1);
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  padding: 6px 12px 14px;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 6px 8px 14px;
   z-index: 50;
 }
 
@@ -1465,4 +1465,567 @@ body {
   padding-top: 6px;
   border-top: 1px dashed rgba(90, 32, 13, 0.1);
 }
+
+/* ==========================================================================
+   ABA DE INSUMOS E DESPESAS (CONTROLE DE SAÍDAS)
+   ========================================================================== */
+
+/* Card Resumo Executivo de Saídas */
+.expenses-overview-banner {
+  background: linear-gradient(140deg, #4A1A0A 0%, #2C0E04 100%);
+  color: #FFF;
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: 0 12px 28px rgba(59, 19, 6, 0.24);
+  border: 1px solid rgba(212, 163, 115, 0.24);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.expenses-overview-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.expenses-overview-label {
+  display: block;
+  font-size: 0.69rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.expenses-overview-total {
+  display: block;
+  font-size: 1.48rem;
+  font-weight: 700;
+  color: #FFF;
+  letter-spacing: -0.02em;
+  margin-top: 2px;
+}
+
+.expenses-count-pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(212, 163, 115, 0.22);
+  color: #FDE68A;
+  font-size: 0.71rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.expenses-overview-split {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 13px;
+  padding: 10px 12px;
+}
+
+.expenses-split-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.split-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.split-dot.direct {
+  background: #34D399;
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
+}
+
+.split-dot.sporadic {
+  background: #FBBF24;
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.5);
+}
+
+.split-name {
+  display: block;
+  font-size: 0.66rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+.expenses-split-item strong {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #FFF;
+}
+
+.expenses-partner-pocket-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 0.73rem;
+  color: rgba(255, 255, 255, 0.78);
+  padding-top: 4px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.pocket-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pocket-pill {
+  background: rgba(255, 255, 255, 0.12);
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  color: #FFF;
+}
+
+.pocket-pill strong {
+  color: #FDE68A;
+}
+
+/* Segmented Control Estilo iOS */
+.ios-segmented-control {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  background: var(--cream-soft);
+  padding: 5px;
+  border-radius: 15px;
+  border: 1px solid rgba(90, 32, 13, 0.09);
+}
+
+.seg-btn {
+  border: none;
+  background: transparent;
+  padding: 10px 12px;
+  border-radius: 11px;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s var(--transition-ios);
+}
+
+.seg-btn.active {
+  background: #FFF;
+  color: var(--cocoa-deep);
+  box-shadow: 0 3px 10px rgba(56, 20, 8, 0.1);
+}
+
+.seg-badge {
+  background: var(--cocoa-Tint);
+  color: var(--cocoa-deep);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 999px;
+}
+
+.seg-btn.active .seg-badge {
+  background: var(--cocoa-deep);
+  color: #FFF;
+}
+
+.expense-subview {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Pílula de Auto-Classificação Inteligente */
+.smart-auto-pill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #ECFDF5;
+  color: #065F46;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.smart-auto-pill.sporadic {
+  background: #FFFBEB;
+  color: #92400E;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+/* Grid de 6 Categorias da Planilha */
+.expense-category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+}
+
+.exp-cat-card {
+  border: 1.5px solid rgba(90, 32, 13, 0.09);
+  background: var(--cream-bg);
+  border-radius: 14px;
+  padding: 11px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: all 0.18s var(--transition-ios);
+}
+
+.exp-cat-card:active {
+  transform: scale(0.96);
+}
+
+.exp-cat-card.selected {
+  background: var(--cocoa-deep);
+  border-color: var(--cocoa-deep);
+  color: #FFF;
+  box-shadow: 0 6px 16px rgba(90, 32, 13, 0.22);
+}
+
+.exp-cat-icon {
+  font-size: 1.25rem;
+  line-height: 1.1;
+  margin-bottom: 2px;
+}
+
+.exp-cat-name {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.exp-cat-card.selected .exp-cat-name {
+  color: #FFF;
+}
+
+.exp-cat-sub {
+  font-size: 0.63rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.exp-cat-card.selected .exp-cat-sub {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* Input de Texto Padrão iOS */
+.ios-text-input {
+  width: 100%;
+  padding: 14px 15px;
+  font-family: var(--font-sans);
+  font-size: 0.94rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--cream-bg);
+  border: 1.5px solid rgba(78, 30, 14, 0.14);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.ios-text-input::placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.ios-text-input:focus {
+  background: #FFF;
+  border-color: var(--cocoa-deep);
+  box-shadow: 0 0 0 4px rgba(78, 30, 14, 0.08);
+}
+
+.field-helper-label {
+  font-size: 0.71rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 10px;
+}
+
+.exp-item-chips .chip-btn {
+  flex: 0 1 auto;
+  text-align: left;
+  padding: 7px 11px;
+  font-size: 0.76rem;
+}
+
+.exp-qty-section {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(90, 32, 13, 0.12);
+}
+
+.card-microcopy {
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+/* Seletor de Quem Pagou (João / Natan) */
+.payer-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.payer-option-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--cream-bg);
+  border: 1.5px solid rgba(90, 32, 13, 0.1);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  text-align: left;
+  transition: all 0.18s var(--transition-ios);
+}
+
+.payer-option-btn.selected {
+  background: var(--cocoa-deep);
+  border-color: var(--cocoa-deep);
+  color: #FFF;
+  box-shadow: 0 6px 16px rgba(90, 32, 13, 0.2);
+}
+
+.payer-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: rgba(90, 32, 13, 0.12);
+  color: var(--cocoa-deep);
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.payer-option-btn.selected .payer-avatar {
+  background: rgba(255, 255, 255, 0.2);
+  color: #FFF;
+}
+
+.payer-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.payer-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.payer-option-btn.selected .payer-name {
+  color: #FFF;
+}
+
+.payer-tag {
+  font-size: 0.66rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.payer-option-btn.selected .payer-tag {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Seletor Tipo de Gasto (Insumo Direto vs Gasto Esporádico) */
+.expense-type-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.exp-type-card {
+  background: var(--cream-bg);
+  border: 1.5px solid rgba(90, 32, 13, 0.1);
+  border-radius: 14px;
+  padding: 12px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: all 0.18s var(--transition-ios);
+}
+
+.exp-type-card.selected {
+  background: #FFF;
+  border-color: var(--cocoa-deep);
+  box-shadow: 0 5px 15px rgba(90, 32, 13, 0.12);
+}
+
+.exp-type-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.exp-type-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.exp-type-dot.direct {
+  background: #10B981;
+}
+
+.exp-type-dot.sporadic {
+  background: #F59E0B;
+}
+
+.exp-type-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.exp-type-desc {
+  font-size: 0.69rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+.summary-line.highlight-reimbursement strong {
+  color: var(--ios-green);
+}
+
+/* Histórico de Despesas e Filtros */
+.expense-filter-pills {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+  scrollbar-width: none;
+}
+
+.expense-filter-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.exp-filter-pill {
+  border: 1px solid rgba(90, 32, 13, 0.14);
+  background: var(--cream-bg);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.exp-filter-pill.active {
+  background: var(--cocoa-deep);
+  color: #FFF;
+  border-color: var(--cocoa-deep);
+}
+
+.expenses-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.expense-history-item {
+  background: var(--cream-bg);
+  border: 1px solid rgba(90, 32, 13, 0.08);
+  border-radius: 14px;
+  padding: 12px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.expense-history-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.expense-history-title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.expense-history-val {
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: var(--cocoa-deep);
+  white-space: nowrap;
+}
+
+.expense-history-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.exp-badge {
+  font-size: 0.66rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(90, 32, 13, 0.08);
+  color: var(--cocoa-deep);
+}
+
+.exp-badge.direct {
+  background: #ECFDF5;
+  color: #065F46;
+}
+
+.exp-badge.sporadic {
+  background: #FFFBEB;
+  color: #92400E;
+}
+
+.exp-badge.payer {
+  background: #EFF6FF;
+  color: #1E40AF;
+}
+
+.expense-history-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  padding-top: 5px;
+  border-top: 1px dashed rgba(90, 32, 13, 0.1);
+}
+
 
