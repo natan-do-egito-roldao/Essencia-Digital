@@ -11,9 +11,9 @@
   <link rel="apple-touch-icon" href="icon.png" />
   <link rel="icon" type="image/png" href="icon.png" />
   <link rel="shortcut icon" type="image/png" href="icon.png" />
-  <link rel="manifest" href="manifest.json?v=4" />
+  <link rel="manifest" href="manifest.json?v=5" />
   <title>La Dolce Brasil — Vendas, Despesas &amp; Gestão</title>
-  <link rel="stylesheet" href="style.css?v=4" />
+  <link rel="stylesheet" href="style.css?v=5" />
 </head>
 <body>
 
@@ -175,19 +175,18 @@
            ================================================================= -->
       <section id="tabSales" class="tab-pane" aria-labelledby="tabBtnSales">
 
-        <form id="salesForm" autocomplete="off" style="display: flex; flex-direction: column; gap: 16px;">
+        <form id="salesForm" autocomplete="off" style="display: flex; flex-direction: column; gap: 14px;">
 
-          <!-- 1. Seleção do Doce -->
+          <!-- 1. Produto -->
           <div class="ios-card">
             <div class="label-row">
               <span class="ios-section-label">
-                <!-- Ícone Sparkles iOS -->
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 3l1.912 5.813a2 2 0 001.275 1.275L21 12l-5.813 1.912a2 2 0 00-1.275 1.275L12 21l-1.912-5.813a2 2 0 00-1.275-1.275L3 12l5.813-1.912a2 2 0 001.275-1.275L12 3z"></path>
                 </svg>
-                1. Selecione o Doce
+                1. Produto
               </span>
-              <span id="productStatusHint" style="font-size: 0.75rem; color: var(--cocoa-light); font-weight: 600;">Toque para selecionar</span>
+              <span id="productStatusHint" class="status-hint-pill">Selecionado</span>
             </div>
 
             <div
@@ -199,15 +198,14 @@
               data-product="Palha Italiana de Chocolate com Leite Ninho"
             >
               <div class="product-icon-box">
-                <!-- Ícone Doce Artesanal / Camadas -->
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
                   <path d="M2 17l10 5 10-5"></path>
                   <path d="M2 12l10 5 10-5"></path>
                 </svg>
               </div>
               <div class="product-info">
-                <div class="product-category">La Dolce Brasil</div>
+                <div class="product-category">Palha Italiana</div>
                 <div class="product-name">Chocolate com Leite Ninho</div>
               </div>
               <div class="product-check">
@@ -218,20 +216,19 @@
             </div>
           </div>
 
-          <!-- Detalhes habilitados ao selecionar o doce -->
+          <!-- Detalhes da Venda -->
           <div id="saleDetailsBox" class="sale-details-container">
 
-            <!-- 2. Quantidade Vendida -->
+            <!-- 2. Quantidade -->
             <div class="ios-card">
               <div class="label-row">
                 <span class="ios-section-label">
-                  <!-- Ícone Sacola iOS -->
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
                     <line x1="3" y1="6" x2="21" y2="6"></line>
                     <path d="M16 10a4 4 0 0 1-8 0"></path>
                   </svg>
-                  2. Quantas foram vendidas?
+                  2. Quantidade
                 </span>
               </div>
 
@@ -241,25 +238,25 @@
                 <button type="button" id="qtyPlusBtn" class="qty-btn" aria-label="Aumentar quantidade">+</button>
               </div>
 
-              <div class="quick-chips">
-                <button type="button" class="chip-btn qty-chip active" data-qty="1">1 un.</button>
-                <button type="button" class="chip-btn qty-chip" data-qty="2">2 un.</button>
-                <button type="button" class="chip-btn qty-chip" data-qty="3">3 un.</button>
-                <button type="button" class="chip-btn qty-chip" data-qty="5">5 un.</button>
+              <div class="quick-chips grid-4">
+                <button type="button" class="chip-btn qty-chip active" data-qty="1">1 un</button>
+                <button type="button" class="chip-btn qty-chip" data-qty="2">2 un</button>
+                <button type="button" class="chip-btn qty-chip" data-qty="3">3 un</button>
+                <button type="button" class="chip-btn qty-chip" data-qty="5">5 un</button>
               </div>
             </div>
 
-            <!-- 3. Por quanto foi vendido (Valor Total) -->
+            <!-- 3. Valor Total -->
             <div class="ios-card">
               <div class="label-row">
                 <span class="ios-section-label">
-                  <!-- Ícone Moeda/Tag iOS -->
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="12" y1="1" x2="12" y2="23"></line>
                     <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                   </svg>
-                  3. Por quanto foi vendido? (Total)
+                  3. Valor da Venda
                 </span>
+                <strong id="calculatedUnitPrice" class="inline-unit-badge">R$ 6,00 / un.</strong>
               </div>
 
               <div class="currency-input-wrap">
@@ -277,36 +274,27 @@
                 />
               </div>
 
-              <!-- Atalhos de preço rápido -->
-              <div class="quick-chips">
+              <div class="quick-chips grid-4">
                 <button type="button" class="chip-btn price-chip" data-price="8.00">R$ 8</button>
                 <button type="button" class="chip-btn price-chip" data-price="10.00">R$ 10</button>
-                <button type="button" class="chip-btn price-chip" data-price="11.00">R$ 11</button>
-                <button type="button" class="chip-btn price-chip" data-price="13.00">R$ 13</button>
+                <button type="button" class="chip-btn price-chip" data-price="12.00">R$ 12</button>
                 <button type="button" class="chip-btn price-chip" data-price="20.00">R$ 20</button>
-              </div>
-
-              <div class="unit-price-calc">
-                <span>Preço unitário calculado:</span>
-                <strong id="calculatedUnitPrice">R$ 6,00 / un.</strong>
               </div>
             </div>
 
-            <!-- 4. Forma de Pagamento -->
+            <!-- 4. Pagamento -->
             <div class="ios-card">
               <div class="label-row">
                 <span class="ios-section-label">
-                  <!-- Ícone Cartão iOS -->
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
                     <line x1="1" y1="10" x2="23" y2="10"></line>
                   </svg>
-                  4. Forma de Pagamento
+                  4. Pagamento
                 </span>
               </div>
 
               <div class="payment-grid" role="radiogroup" aria-label="Forma de pagamento">
-                <!-- Pix -->
                 <div class="payment-option selected" data-payment="Pix" role="radio" aria-checked="true" tabindex="0">
                   <div class="payment-icon">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -318,7 +306,6 @@
                   <span class="payment-label">Pix</span>
                 </div>
 
-                <!-- Dinheiro -->
                 <div class="payment-option" data-payment="Dinheiro" role="radio" aria-checked="false" tabindex="0">
                   <div class="payment-icon">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -330,7 +317,6 @@
                   <span class="payment-label">Dinheiro</span>
                 </div>
 
-                <!-- Débito -->
                 <div class="payment-option" data-payment="Débito" role="radio" aria-checked="false" tabindex="0">
                   <div class="payment-icon">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -341,7 +327,6 @@
                   <span class="payment-label">Débito</span>
                 </div>
 
-                <!-- Crédito -->
                 <div class="payment-option" data-payment="Crédito" role="radio" aria-checked="false" tabindex="0">
                   <div class="payment-icon">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -358,19 +343,19 @@
             <!-- Resumo da Venda & Botão de Envio -->
             <div class="summary-banner">
               <div class="summary-line">
-                <span>Vendedor responsável</span>
+                <span>Vendedor</span>
                 <strong id="summarySeller">Natan</strong>
               </div>
               <div class="summary-line">
-                <span>Item selecionado</span>
-                <strong id="summaryItem">Palha Italiana (Choc. c/ Ninho)</strong>
+                <span>Produto</span>
+                <strong id="summaryItem">Palha Italiana</strong>
               </div>
               <div class="summary-line">
                 <span>Pagamento</span>
                 <strong id="summaryPayment">Pix</strong>
               </div>
               <div class="summary-line total">
-                <span id="summaryQtyLabel">Total (1 unidade)</span>
+                <span id="summaryQtyLabel">Total (1 un.)</span>
                 <span id="summaryTotalValue">R$ 6,00</span>
               </div>
             </div>
@@ -380,7 +365,7 @@
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
               </svg>
-              <span>Registrar Venda na Planilha</span>
+              <span>Salvar Venda</span>
             </button>
 
           </div>
@@ -397,10 +382,10 @@
         <!-- Cabeçalho da Aba de Despesas -->
         <div class="finance-top-bar">
           <div>
-            <span class="finance-eyebrow">Aba "Insumos e Despesas" • Planilha</span>
-            <h2 class="finance-main-title">Controle de Saídas</h2>
+            <span class="finance-eyebrow">Insumos e Despesas</span>
+            <h2 class="finance-main-title">Saídas &amp; Compras</h2>
           </div>
-          <button type="button" id="refreshExpensesBtn" class="finance-sync-btn" title="Sincronizar despesas com a planilha">
+          <button type="button" id="refreshExpensesBtn" class="finance-sync-btn" title="Sincronizar despesas">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="23 4 23 10 17 10"></polyline>
               <polyline points="1 20 1 14 7 14"></polyline>
@@ -410,11 +395,11 @@
           </button>
         </div>
 
-        <!-- Card Resumo Executivo de Saídas (Quem adiantou quanto) -->
+        <!-- Card Resumo Executivo de Saídas -->
         <div class="expenses-overview-banner">
           <div class="expenses-overview-top">
             <div>
-              <span class="expenses-overview-label">Total Acumulado em Saídas</span>
+              <span class="expenses-overview-label">Total em Saídas</span>
               <strong id="expTotalGeralVal" class="expenses-overview-total">R$ 338,50</strong>
             </div>
             <span id="expCountBadge" class="expenses-count-pill">8 lançamentos</span>
@@ -431,14 +416,14 @@
             <div class="expenses-split-item">
               <span class="split-dot sporadic"></span>
               <div>
-                <span class="split-name">Gastos Esporádicos</span>
+                <span class="split-name">Esporádicos</span>
                 <strong id="expTotalEsporadicosVal">R$ 62,00</strong>
               </div>
             </div>
           </div>
 
           <div class="expenses-partner-pocket-bar">
-            <span>Adiantado do bolso:</span>
+            <span>Pago por sócio:</span>
             <div class="pocket-pills">
               <span class="pocket-pill">João: <strong id="expPagoJoaoVal">R$ 233,50</strong></span>
               <span class="pocket-pill">Natan: <strong id="expPagoNatanVal">R$ 105,00</strong></span>
@@ -446,7 +431,7 @@
           </div>
         </div>
 
-        <!-- Segmented Control Estilo iOS: Lançar Gasto vs Histórico -->
+        <!-- Segmented Control Estilo iOS: Novo Gasto vs Histórico -->
         <div class="ios-segmented-control" role="tablist" aria-label="Modo de visualização de despesas">
           <button type="button" id="segBtnNewExpense" class="seg-btn active" role="tab" aria-selected="true">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -464,18 +449,18 @@
               <line x1="3" y1="12" x2="3.01" y2="12"></line>
               <line x1="3" y1="18" x2="3.01" y2="18"></line>
             </svg>
-            <span>Histórico da Planilha</span>
+            <span>Histórico</span>
             <span id="segHistoryCount" class="seg-badge">8</span>
           </button>
         </div>
 
         <!-- ===============================================================
-             SUB-VIEW 1: FORMULÁRIO INTELIGENTE DE NOVO GASTO
+             SUB-VIEW 1: FORMULÁRIO DIRETO DE NOVO GASTO
              =============================================================== -->
         <div id="expenseFormView" class="expense-subview">
-          <form id="expenseForm" autocomplete="off" style="display: flex; flex-direction: column; gap: 16px;">
+          <form id="expenseForm" autocomplete="off" style="display: flex; flex-direction: column; gap: 14px;">
 
-            <!-- 1. Categoria (Idêntica à validação da Coluna B da planilha) -->
+            <!-- 1. Categoria -->
             <div class="ios-card">
               <div class="label-row">
                 <span class="ios-section-label">
@@ -483,57 +468,45 @@
                     <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
                     <line x1="7" y1="7" x2="7.01" y2="7"></line>
                   </svg>
-                  1. Qual é a categoria do gasto?
+                  1. Categoria
                 </span>
                 <span id="expCategoryAutoHint" class="smart-auto-pill">Insumo Direto</span>
               </div>
 
               <div class="expense-category-grid" role="radiogroup" aria-label="Categoria da despesa">
-                <!-- Ingredientes -->
                 <button type="button" class="exp-cat-card selected" data-category="Ingredientes" data-default-type="Insumo Direto">
                   <span class="exp-cat-icon">🍫</span>
                   <span class="exp-cat-name">Ingredientes</span>
-                  <span class="exp-cat-sub">Receita base</span>
                 </button>
 
-                <!-- Embalagens -->
                 <button type="button" class="exp-cat-card" data-category="Embalagens" data-default-type="Insumo Direto">
                   <span class="exp-cat-icon">🛍️</span>
                   <span class="exp-cat-name">Embalagens</span>
-                  <span class="exp-cat-sub">Celofane / Fita</span>
                 </button>
 
-                <!-- Adesivos -->
                 <button type="button" class="exp-cat-card" data-category="Adesivos" data-default-type="Insumo Direto">
                   <span class="exp-cat-icon">🏷️</span>
                   <span class="exp-cat-name">Adesivos</span>
-                  <span class="exp-cat-sub">Logo / Gráfica</span>
                 </button>
 
-                <!-- Alimentação/Água -->
                 <button type="button" class="exp-cat-card" data-category="Alimentação/Água" data-default-type="Gasto Esporádico">
                   <span class="exp-cat-icon">🍱</span>
-                  <span class="exp-cat-name">Alimentação/Água</span>
-                  <span class="exp-cat-sub">Almoço / Rua</span>
+                  <span class="exp-cat-name">Alimentação</span>
                 </button>
 
-                <!-- Transporte -->
                 <button type="button" class="exp-cat-card" data-category="Transporte" data-default-type="Gasto Esporádico">
                   <span class="exp-cat-icon">⛽</span>
                   <span class="exp-cat-name">Transporte</span>
-                  <span class="exp-cat-sub">Combustível / App</span>
                 </button>
 
-                <!-- Outros -->
                 <button type="button" class="exp-cat-card" data-category="Outros" data-default-type="Gasto Esporádico">
                   <span class="exp-cat-icon">📦</span>
                   <span class="exp-cat-name">Outros</span>
-                  <span class="exp-cat-sub">Gás / Utensílios</span>
                 </button>
               </div>
             </div>
 
-            <!-- 2. Item / Descrição (Coluna C) + Sugestões Inteligentes -->
+            <!-- 2. Item / Descrição -->
             <div class="ios-card">
               <div class="label-row">
                 <span class="ios-section-label">
@@ -541,7 +514,7 @@
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                   </svg>
-                  2. O que foi comprado? (Item / Descrição)
+                  2. Item / Descrição
                 </span>
               </div>
 
@@ -549,17 +522,16 @@
                 type="text"
                 id="expDescInput"
                 class="ios-text-input"
-                placeholder="Ex: Leite Condensado (Caixa c/ 27 un)"
+                placeholder="Ex: Leite Condensado (Cx c/ 27)"
                 required
               />
 
-              <div class="field-helper-label">Toque rápido para preencher como na planilha:</div>
-              <div id="expQuickItemChips" class="quick-chips exp-item-chips">
-                <!-- Preenchido dinamicamente conforme a categoria escolhida -->
+              <div id="expQuickItemChips" class="tag-chips">
+                <!-- Preenchido dinamicamente -->
               </div>
             </div>
 
-            <!-- 3. Valor Total (Coluna E) & Quantidade (Coluna D) -->
+            <!-- 3. Valor Total & Quantidade -->
             <div class="ios-card">
               <div class="label-row">
                 <span class="ios-section-label">
@@ -567,8 +539,9 @@
                     <line x1="12" y1="1" x2="12" y2="23"></line>
                     <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                   </svg>
-                  3. Quanto custou no total?
+                  3. Valor Total
                 </span>
+                <strong id="expCalculatedUnitCost" class="inline-unit-badge">R$ 0,00 / un.</strong>
               </div>
 
               <div class="currency-input-wrap">
@@ -585,21 +558,17 @@
                 />
               </div>
 
-              <!-- Atalhos de valores frequentes de compras -->
-              <div class="quick-chips">
+              <div class="quick-chips grid-4">
                 <button type="button" class="chip-btn exp-val-chip" data-val="18.00">R$ 18</button>
                 <button type="button" class="chip-btn exp-val-chip" data-val="25.00">R$ 25</button>
-                <button type="button" class="chip-btn exp-val-chip" data-val="32.00">R$ 32</button>
                 <button type="button" class="chip-btn exp-val-chip" data-val="38.50">R$ 38,50</button>
                 <button type="button" class="chip-btn exp-val-chip" data-val="135.00">R$ 135</button>
               </div>
 
-              <!-- Quantidade comprada (Coluna D) -->
+              <!-- Quantidade -->
               <div class="exp-qty-section">
                 <div class="label-row" style="margin-bottom: 8px;">
-                  <span class="ios-section-label" style="font-size: 0.72rem;">
-                    Quantidade de itens / unidades na compra
-                  </span>
+                  <span class="ios-section-label">Quantidade</span>
                 </div>
 
                 <div class="qty-control-wrapper">
@@ -608,86 +577,60 @@
                   <button type="button" id="expQtyPlusBtn" class="qty-btn" aria-label="Aumentar quantidade">+</button>
                 </div>
 
-                <div class="quick-chips">
-                  <button type="button" class="chip-btn exp-qty-chip active" data-qty="1">1 un.</button>
-                  <button type="button" class="chip-btn exp-qty-chip" data-qty="2">2 un.</button>
-                  <button type="button" class="chip-btn exp-qty-chip" data-qty="4">4 pct</button>
-                  <button type="button" class="chip-btn exp-qty-chip" data-qty="27">27 (Caixa)</button>
-                  <button type="button" class="chip-btn exp-qty-chip" data-qty="100">100 (Cento)</button>
+                <div class="quick-chips grid-4">
+                  <button type="button" class="chip-btn exp-qty-chip active" data-qty="1">1 un</button>
+                  <button type="button" class="chip-btn exp-qty-chip" data-qty="4">4 un</button>
+                  <button type="button" class="chip-btn exp-qty-chip" data-qty="27">27 un</button>
+                  <button type="button" class="chip-btn exp-qty-chip" data-qty="100">100 un</button>
                 </div>
-              </div>
-
-              <div class="unit-price-calc">
-                <span>Custo médio por unidade comprada:</span>
-                <strong id="expCalculatedUnitCost">R$ 0,00 / un.</strong>
               </div>
             </div>
 
-            <!-- 4. Quem Pagou (Coluna F) & Tipo de Gasto (Coluna G) -->
+            <!-- 4. Pago por & Tipo de Gasto -->
             <div class="ios-card">
               <div class="label-row">
                 <span class="ios-section-label">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                     <circle cx="9" cy="7" r="4"></circle>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                   </svg>
-                  4. Quem tirou do bolso? (Pago por)
+                  4. Pago por
                 </span>
               </div>
-
-              <p class="card-microcopy">
-                O valor entra automaticamente como crédito de reembolso (50/50) para o sócio que pagou.
-              </p>
 
               <div class="payer-selector-grid" role="radiogroup" aria-label="Pago por">
                 <button type="button" class="payer-option-btn selected" data-payer="Natan">
                   <span class="payer-avatar">N</span>
-                  <div class="payer-meta">
-                    <span class="payer-name">Natan</span>
-                    <span class="payer-tag">Pagou do próprio bolso</span>
-                  </div>
+                  <span class="payer-name">Natan</span>
                 </button>
 
                 <button type="button" class="payer-option-btn" data-payer="João">
                   <span class="payer-avatar">J</span>
-                  <div class="payer-meta">
-                    <span class="payer-name">João</span>
-                    <span class="payer-tag">Pagou do próprio bolso</span>
-                  </div>
+                  <span class="payer-name">João</span>
                 </button>
               </div>
 
-              <!-- Classificação: Tipo de Gasto (Coluna G) -->
-              <div style="margin-top: 18px;">
+              <!-- Tipo de Gasto -->
+              <div style="margin-top: 14px;">
                 <div class="label-row" style="margin-bottom: 8px;">
-                  <span class="ios-section-label" style="font-size: 0.72rem;">
-                    Classificação na Planilha (Tipo de Gasto)
-                  </span>
+                  <span class="ios-section-label">Tipo de Gasto</span>
                 </div>
 
                 <div class="expense-type-grid" role="radiogroup" aria-label="Tipo de Gasto">
                   <button type="button" class="exp-type-card selected" data-exptype="Insumo Direto">
-                    <div class="exp-type-header">
-                      <span class="exp-type-dot direct"></span>
-                      <span class="exp-type-title">Insumo Direto</span>
-                    </div>
-                    <p class="exp-type-desc">Entra direto na produção da palha (ingredientes, embalagem, adesivo).</p>
+                    <span class="exp-type-dot direct"></span>
+                    <span class="exp-type-title">Insumo Direto</span>
                   </button>
 
                   <button type="button" class="exp-type-card" data-exptype="Gasto Esporádico">
-                    <div class="exp-type-header">
-                      <span class="exp-type-dot sporadic"></span>
-                      <span class="exp-type-title">Gasto Esporádico</span>
-                    </div>
-                    <p class="exp-type-desc">Custos operacionais de rua ou apoio (almoço, água, combustível).</p>
+                    <span class="exp-type-dot sporadic"></span>
+                    <span class="exp-type-title">Gasto Esporádico</span>
                   </button>
                 </div>
               </div>
             </div>
 
-            <!-- 5. Observações / Local da Compra (Coluna H) -->
+            <!-- 5. Observações -->
             <div class="ios-card">
               <div class="label-row">
                 <span class="ios-section-label">
@@ -695,35 +638,36 @@
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                     <circle cx="12" cy="10" r="3"></circle>
                   </svg>
-                  5. Onde foi comprado / Observações
+                  5. Local / Observação
                 </span>
-                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Opcional</span>
+                <span class="optional-badge">Opcional</span>
               </div>
 
               <input
                 type="text"
                 id="expObsInput"
                 class="ios-text-input"
-                placeholder="Ex: Comprado no Atacadão, Supermercado local..."
+                placeholder="Ex: Atacadão, Supermercado..."
               />
 
-              <div class="quick-chips" style="margin-top: 10px;">
-                <button type="button" class="chip-btn exp-obs-chip" data-obs="Comprado no Atacadão">Atacadão</button>
-                <button type="button" class="chip-btn exp-obs-chip" data-obs="Supermercado local">Supermercado</button>
-                <button type="button" class="chip-btn exp-obs-chip" data-obs="Loja de confeitaria">Loja confeitaria</button>
-                <button type="button" class="chip-btn exp-obs-chip" data-obs="Gráfica rápida">Gráfica</button>
-                <button type="button" class="chip-btn exp-obs-chip" data-obs="Almoço durante produção/vendas">Almoço/Vendas</button>
+              <div class="tag-chips">
+                <button type="button" class="tag-chip exp-obs-chip" data-obs="Comprado no Atacadão">Atacadão</button>
+                <button type="button" class="tag-chip exp-obs-chip" data-obs="Supermercado local">Mercado</button>
+                <button type="button" class="tag-chip exp-obs-chip" data-obs="Loja de confeitaria">Confeitaria</button>
+                <button type="button" class="tag-chip exp-obs-chip" data-obs="Gráfica rápida">Gráfica</button>
+                <button type="button" class="tag-chip exp-obs-chip" data-obs="Almoço durante produção/vendas">Almoço</button>
+                <button type="button" class="tag-chip exp-obs-chip" data-obs="Entrega nos pontos parceiros">Entregas</button>
               </div>
             </div>
 
-            <!-- Resumo de Conferência + Impacto 50/50 -->
+            <!-- Resumo de Conferência -->
             <div class="summary-banner expense-summary-banner">
               <div class="summary-line">
-                <span>Categoria &amp; Classificação</span>
+                <span>Categoria</span>
                 <strong id="expSummaryCatType">Ingredientes • Insumo Direto</strong>
               </div>
               <div class="summary-line">
-                <span>Item / Descrição</span>
+                <span>Item</span>
                 <strong id="expSummaryItem">—</strong>
               </div>
               <div class="summary-line">
@@ -731,11 +675,11 @@
                 <strong id="expSummaryPayer">Natan</strong>
               </div>
               <div class="summary-line highlight-reimbursement">
-                <span>Crédito no acerto 50/50</span>
-                <strong id="expSummaryReimbursement">+R$ 0,00 a favor de Natan</strong>
+                <span>Reembolso 50/50</span>
+                <strong id="expSummaryReimbursement">+R$ 0,00 (Natan)</strong>
               </div>
               <div class="summary-line total">
-                <span id="expSummaryQtyLabel">Saída Total (1 un.)</span>
+                <span id="expSummaryQtyLabel">Total (1 un.)</span>
                 <span id="expSummaryTotalVal">R$ 0,00</span>
               </div>
             </div>
@@ -745,7 +689,7 @@
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
               </svg>
-              <span>Registrar Despesa na Planilha</span>
+              <span>Salvar Despesa</span>
             </button>
 
           </form>
@@ -1025,6 +969,6 @@
     </nav>
   </main>
 
-  <script src="code.js?v=4"></script>
+  <script src="code.js?v=5"></script>
 </body>
 </html>

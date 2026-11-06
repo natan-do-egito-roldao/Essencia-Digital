@@ -427,18 +427,40 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 .ios-section-label {
-  font-size: 0.76rem;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--text-secondary);
   display: flex;
   align-items: center;
   gap: 6px;
+  min-width: 0;
+}
+
+.status-hint-pill,
+.inline-unit-badge,
+.optional-badge {
+  font-size: 0.73rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(90, 32, 13, 0.07);
+  color: var(--cocoa-deep);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.optional-badge {
+  color: var(--text-muted);
+  font-weight: 600;
+  background: var(--cream-bg);
 }
 
 /* Card de Produto Selecionável */
@@ -583,31 +605,69 @@ body {
   margin: 0;
 }
 
-/* Chips Rápidos */
+/* Chips Rápidos Numéricos (Grid 4 colunas sem estourar caixa) */
 .quick-chips {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   margin-top: 10px;
-  flex-wrap: wrap;
 }
 
 .chip-btn {
-  flex: 1;
-  min-width: 54px;
-  padding: 7px 10px;
-  border-radius: 10px;
+  width: 100%;
+  min-width: 0;
+  padding: 9px 4px;
+  border-radius: 11px;
   border: 1px solid rgba(78, 30, 14, 0.12);
   background: var(--cream-bg);
   color: var(--text-secondary);
   font-family: var(--font-sans);
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .chip-btn.active,
 .chip-btn:active {
+  background: var(--cocoa-deep);
+  color: #FFF;
+  border-color: var(--cocoa-deep);
+}
+
+/* Pílulas de Texto Fluido (Itens e Locais — nunca saem da caixa) */
+.tag-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.tag-chip {
+  flex: 0 1 auto;
+  max-width: 100%;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(78, 30, 14, 0.13);
+  background: var(--cream-bg);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tag-chip.active,
+.tag-chip:active {
   background: var(--cocoa-deep);
   color: #FFF;
   border-color: var(--cocoa-deep);
@@ -733,13 +793,24 @@ body {
 .summary-line {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
   font-size: 0.83rem;
   color: var(--text-secondary);
+}
+
+.summary-line span:first-child {
+  flex-shrink: 0;
 }
 
 .summary-line strong {
   color: var(--text-primary);
   font-weight: 600;
+  text-align: right;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .summary-line.total {
@@ -1666,72 +1737,65 @@ body {
   border-color: rgba(245, 158, 11, 0.3);
 }
 
-/* Grid de 6 Categorias da Planilha */
+/* Grid de 6 Categorias (2 colunas amplas e alinhadas) */
 .expense-category-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 9px;
 }
 
 .exp-cat-card {
+  min-width: 0;
   border: 1.5px solid rgba(90, 32, 13, 0.09);
   background: var(--cream-bg);
   border-radius: 14px;
-  padding: 11px 8px;
+  padding: 11px 12px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  text-align: center;
-  gap: 3px;
+  justify-content: flex-start;
+  gap: 9px;
   cursor: pointer;
   font-family: var(--font-sans);
   transition: all 0.18s var(--transition-ios);
 }
 
 .exp-cat-card:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
 .exp-cat-card.selected {
   background: var(--cocoa-deep);
   border-color: var(--cocoa-deep);
   color: #FFF;
-  box-shadow: 0 6px 16px rgba(90, 32, 13, 0.22);
+  box-shadow: 0 5px 14px rgba(90, 32, 13, 0.2);
 }
 
 .exp-cat-icon {
-  font-size: 1.25rem;
-  line-height: 1.1;
-  margin-bottom: 2px;
+  font-size: 1.15rem;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 .exp-cat-name {
-  font-size: 0.76rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: var(--text-primary);
-  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .exp-cat-card.selected .exp-cat-name {
   color: #FFF;
 }
 
-.exp-cat-sub {
-  font-size: 0.63rem;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.exp-cat-card.selected .exp-cat-sub {
-  color: rgba(255, 255, 255, 0.78);
-}
-
 /* Input de Texto Padrão iOS */
 .ios-text-input {
   width: 100%;
-  padding: 14px 15px;
+  padding: 13px 14px;
   font-family: var(--font-sans);
-  font-size: 0.94rem;
+  font-size: 0.92rem;
   font-weight: 600;
   color: var(--text-primary);
   background: var(--cream-bg);
@@ -1752,51 +1816,31 @@ body {
   box-shadow: 0 0 0 4px rgba(78, 30, 14, 0.08);
 }
 
-.field-helper-label {
-  font-size: 0.71rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  margin-top: 10px;
-}
-
-.exp-item-chips .chip-btn {
-  flex: 0 1 auto;
-  text-align: left;
-  padding: 7px 11px;
-  font-size: 0.76rem;
-}
-
 .exp-qty-section {
-  margin-top: 16px;
+  margin-top: 14px;
   padding-top: 14px;
   border-top: 1px dashed rgba(90, 32, 13, 0.12);
-}
-
-.card-microcopy {
-  font-size: 0.76rem;
-  color: var(--text-secondary);
-  line-height: 1.4;
-  margin-bottom: 12px;
 }
 
 /* Seletor de Quem Pagou (João / Natan) */
 .payer-selector-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
 .payer-option-btn {
+  min-width: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px;
+  justify-content: center;
+  gap: 9px;
+  padding: 11px 12px;
   border-radius: 14px;
   background: var(--cream-bg);
   border: 1.5px solid rgba(90, 32, 13, 0.1);
   cursor: pointer;
   font-family: var(--font-sans);
-  text-align: left;
   transition: all 0.18s var(--transition-ios);
 }
 
@@ -1804,16 +1848,16 @@ body {
   background: var(--cocoa-deep);
   border-color: var(--cocoa-deep);
   color: #FFF;
-  box-shadow: 0 6px 16px rgba(90, 32, 13, 0.2);
+  box-shadow: 0 5px 14px rgba(90, 32, 13, 0.2);
 }
 
 .payer-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 11px;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
   background: rgba(90, 32, 13, 0.12);
   color: var(--cocoa-deep);
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -1826,63 +1870,43 @@ body {
   color: #FFF;
 }
 
-.payer-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
 .payer-name {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: var(--text-primary);
+  white-space: nowrap;
 }
 
 .payer-option-btn.selected .payer-name {
   color: #FFF;
 }
 
-.payer-tag {
-  font-size: 0.66rem;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.payer-option-btn.selected .payer-tag {
-  color: rgba(255, 255, 255, 0.8);
-}
-
 /* Seletor Tipo de Gasto (Insumo Direto vs Gasto Esporádico) */
 .expense-type-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
 .exp-type-card {
+  min-width: 0;
   background: var(--cream-bg);
   border: 1.5px solid rgba(90, 32, 13, 0.1);
   border-radius: 14px;
-  padding: 12px;
-  text-align: left;
+  padding: 12px 10px;
   cursor: pointer;
   font-family: var(--font-sans);
   display: flex;
-  flex-direction: column;
-  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   transition: all 0.18s var(--transition-ios);
 }
 
 .exp-type-card.selected {
   background: #FFF;
   border-color: var(--cocoa-deep);
-  box-shadow: 0 5px 15px rgba(90, 32, 13, 0.12);
-}
-
-.exp-type-header {
-  display: flex;
-  align-items: center;
-  gap: 7px;
+  box-shadow: 0 4px 12px rgba(90, 32, 13, 0.12);
 }
 
 .exp-type-dot {
@@ -1901,15 +1925,12 @@ body {
 }
 
 .exp-type-title {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--text-primary);
-}
-
-.exp-type-desc {
-  font-size: 0.69rem;
-  color: var(--text-secondary);
-  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .summary-line.highlight-reimbursement strong {

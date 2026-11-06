@@ -860,35 +860,35 @@ if (refreshFinanceBtn) {
 // ============================================================================
 const SUGESTOES_POR_CATEGORIA = {
   "Ingredientes": [
-    { texto: "Leite Condensado (Caixa c/ 27 un)", qtd: 27, valor: 135.00, obs: "Comprado no Atacadão" },
-    { texto: "Biscoito Maisena (Pacote 400g)", qtd: 4, valor: 28.00, obs: "Supermercado local" },
-    { texto: "Chocolate em Pó 50% (1kg)", qtd: 1, valor: 38.50, obs: "Loja de confeitaria" },
-    { texto: "Manteiga sem sal (500g)", qtd: 2, valor: 32.00, obs: "Para a base de brigadeiro" },
-    { texto: "Leite Ninho em Pó (Lata 380g)", qtd: 1, valor: 22.00, obs: "Supermercado local" }
+    { rotulo: "Leite Cond. (27 un)", texto: "Leite Condensado (Caixa c/ 27 un)", qtd: 27, valor: 135.00, obs: "Comprado no Atacadão" },
+    { rotulo: "Maisena (400g)", texto: "Biscoito Maisena (Pacote 400g)", qtd: 4, valor: 28.00, obs: "Supermercado local" },
+    { rotulo: "Cacau 50% (1kg)", texto: "Chocolate em Pó 50% (1kg)", qtd: 1, valor: 38.50, obs: "Loja de confeitaria" },
+    { rotulo: "Manteiga (500g)", texto: "Manteiga sem sal (500g)", qtd: 2, valor: 32.00, obs: "Para a base de brigadeiro" },
+    { rotulo: "Leite Ninho", texto: "Leite Ninho em Pó (Lata 380g)", qtd: 1, valor: 22.00, obs: "Supermercado local" }
   ],
   "Embalagens": [
-    { texto: "Saquinhos Celofane (Pacote c/ 100)", qtd: 100, valor: 18.00, obs: "Embalagem individual" },
-    { texto: "Rolo de Fitilho / Fita Cetim", qtd: 1, valor: 12.00, obs: "Loja de confeitaria" },
-    { texto: "Forminhas / Tapetinhos para doce", qtd: 100, valor: 9.50, obs: "Loja de embalagens" }
+    { rotulo: "Celofane (100 un)", texto: "Saquinhos Celofane (Pacote c/ 100)", qtd: 100, valor: 18.00, obs: "Embalagem individual" },
+    { rotulo: "Fitilho / Fita", texto: "Rolo de Fitilho / Fita Cetim", qtd: 1, valor: 12.00, obs: "Loja de confeitaria" },
+    { rotulo: "Forminhas (100 un)", texto: "Forminhas / Tapetinhos para doce", qtd: 100, valor: 9.50, obs: "Loja de embalagens" }
   ],
   "Adesivos": [
-    { texto: "Adesivos com Logo da Marca (100 un)", qtd: 100, valor: 25.00, obs: "Gráfica rápida" },
-    { texto: "Tag Personalizada La Dolce (100 un)", qtd: 100, valor: 30.00, obs: "Gráfica rápida" }
+    { rotulo: "Adesivos Logo (100 un)", texto: "Adesivos com Logo da Marca (100 un)", qtd: 100, valor: 25.00, obs: "Gráfica rápida" },
+    { rotulo: "Tag La Dolce (100 un)", texto: "Tag Personalizada La Dolce (100 un)", qtd: 100, valor: 30.00, obs: "Gráfica rápida" }
   ],
   "Alimentação/Água": [
-    { texto: "Marmita almoço + Água mineral", qtd: 2, valor: 42.00, obs: "Almoço durante produção/vendas" },
-    { texto: "Água mineral para turno de vendas", qtd: 2, valor: 8.00, obs: "Durante vendas na rua" },
-    { texto: "Lanche rápido da equipe", qtd: 2, valor: 24.00, obs: "Turno de vendas" }
+    { rotulo: "Marmita + Água", texto: "Marmita almoço + Água mineral", qtd: 2, valor: 42.00, obs: "Almoço durante produção/vendas" },
+    { rotulo: "Água mineral", texto: "Água mineral para turno de vendas", qtd: 2, valor: 8.00, obs: "Durante vendas na rua" },
+    { rotulo: "Lanche rápido", texto: "Lanche rápido da equipe", qtd: 2, valor: 24.00, obs: "Turno de vendas" }
   ],
   "Transporte": [
-    { texto: "Combustível / Deslocamento entregas", qtd: 1, valor: 20.00, obs: "Entrega nos pontos parceiros" },
-    { texto: "Uber / 99 para busca de insumos", qtd: 1, valor: 18.00, obs: "Ida ao atacado" },
-    { texto: "Estacionamento / Pedágio", qtd: 1, valor: 10.00, obs: "Rota de entregas" }
+    { rotulo: "Combustível", texto: "Combustível / Deslocamento entregas", qtd: 1, valor: 20.00, obs: "Entrega nos pontos parceiros" },
+    { rotulo: "Uber / 99", texto: "Uber / 99 para busca de insumos", qtd: 1, valor: 18.00, obs: "Ida ao atacado" },
+    { rotulo: "Estacionamento", texto: "Estacionamento / Pedágio", qtd: 1, valor: 10.00, obs: "Rota de entregas" }
   ],
   "Outros": [
-    { texto: "Proporcional Gás de Cozinha / Energia", qtd: 1, valor: 15.00, obs: "Custo indireto de produção" },
-    { texto: "Espátula de Silicone / Panela", qtd: 1, valor: 35.00, obs: "Utensílio de cozinha" },
-    { texto: "Touca descartável / Luvas / Álcool", qtd: 1, valor: 16.00, obs: "Higiene na produção" }
+    { rotulo: "Gás / Energia", texto: "Proporcional Gás de Cozinha / Energia", qtd: 1, valor: 15.00, obs: "Custo indireto de produção" },
+    { rotulo: "Utensílio cozinha", texto: "Espátula de Silicone / Panela", qtd: 1, valor: 35.00, obs: "Utensílio de cozinha" },
+    { rotulo: "Luvas / Toucas", texto: "Touca descartável / Luvas / Álcool", qtd: 1, valor: 16.00, obs: "Higiene na produção" }
   ]
 };
 
@@ -1107,8 +1107,8 @@ function renderizarSugestoesCategoria(categoria) {
   expQuickItemChips.innerHTML = lista
     .map(
       (sug, i) => `
-      <button type="button" class="chip-btn exp-sug-chip" data-idx="${i}">
-        ${sug.texto}
+      <button type="button" class="tag-chip exp-sug-chip" data-idx="${i}">
+        ${sug.rotulo || sug.texto}
       </button>
     `
     )
@@ -1266,10 +1266,10 @@ function atualizarResumoDespesa() {
     expSummaryPayer.textContent = expenseState.pagoPor;
   }
   if (expSummaryReimbursement) {
-    expSummaryReimbursement.textContent = `+${formatarMoeda(metadeCredito)} a favor de ${expenseState.pagoPor}`;
+    expSummaryReimbursement.textContent = `+${formatarMoeda(metadeCredito)} (${expenseState.pagoPor})`;
   }
   if (expSummaryQtyLabel) {
-    expSummaryQtyLabel.textContent = `Saída Total (${qtd} ${qtd === 1 ? "un." : "unid."})`;
+    expSummaryQtyLabel.textContent = `Total (${qtd} un.)`;
   }
   if (expSummaryTotalVal) {
     expSummaryTotalVal.textContent = formatarMoeda(total);
