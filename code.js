@@ -1,5 +1,5 @@
 // URL que você copiou no passo 8 do Apps Script
-const urlPlanilha = "https://script.google.com/macros/s/AKfycbwMOW4mPWzn2OfvJ9l43x85_ypna8T1elE3OwC4FlToPjU7cG7wYYOnK9IdvDVk2ao_jw/exec";
+const urlPlanilha = "https://script.google.com/macros/s/AKfycbzuZGukDeqqI32xmYR_Px4w-TeEcHES-DL5FzolcraJFpfemW0CN9eyTUBvYvrzCaJX7g/exec";
 
 // ============================================================================
 // CONFIGURAÇÃO DE SENHAS DOS VENDEDORES
