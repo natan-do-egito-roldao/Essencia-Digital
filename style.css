@@ -848,7 +848,12 @@ body {
   font-weight: 600;
   cursor: pointer;
   position: relative;
+  touch-action: manipulation;
   transition: color 0.2s ease, transform 0.15s ease;
+}
+
+.tab-item > * {
+  pointer-events: none;
 }
 
 .tab-item:active {
