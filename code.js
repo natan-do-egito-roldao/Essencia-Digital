@@ -257,6 +257,10 @@ function definirQuantidade(novaQtd, atualizarValorSugerido = true) {
     const sugerido = (qtd * PRECO_UNITARIO_SUGERIDO).toFixed(2);
     totalPriceInput.value = sugerido;
     appState.valorTotal = parseFloat(sugerido);
+
+    priceChips.forEach((chip) => {
+      chip.classList.toggle("active", parseFloat(chip.dataset.price) === appState.valorTotal);
+    });
   }
 
   atualizarResumoVenda();
