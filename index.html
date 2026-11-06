@@ -752,35 +752,35 @@
           <span id="financeLastSyncText">Conectado à aba "Visão Geral"</span>
         </div>
 
-        <!-- CARD HERO: RESOLUÇÃO FINAL DO ACERTO (PIX ENTRE SÓCIOS) -->
+        <!-- CARD HERO: RESOLUÇÃO FINAL DO ACERTO (C26:G26 e C25/D25) -->
         <div class="settlement-hero-card">
           <div class="settlement-hero-header">
             <span class="settlement-badge">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="12 2 22 12 12 22 2 12 12 2"></polygon>
               </svg>
-              Resolução Final do Acerto
+              Resolução Final (C26:G26)
             </span>
             <span id="finEquilibrioTag" class="settlement-rule-tag">Equilíbrio (R$ 0,00)</span>
           </div>
 
           <p id="finResolucaoTexto" class="settlement-hero-message">
-            👉 NATAN deve transferir via Pix para JOÃO o valor de R$ 87,25
+            👉 NATAN deve transferir via Pix para JOÃO o valor de R$ 21,00
           </p>
 
           <div class="settlement-partners-strip">
             <div class="partner-balance-pill">
-              <span class="partner-pill-name">João (Saldo Compensação)</span>
-              <strong id="finHeroSaldoJoao" class="partner-pill-val val-positive">R$ 87,25</strong>
+              <span class="partner-pill-name">João • Saldo (C25)</span>
+              <strong id="finHeroSaldoJoao" class="partner-pill-val val-positive">R$ 21,00</strong>
             </div>
             <div class="partner-balance-pill">
-              <span class="partner-pill-name">Natan (Saldo Compensação)</span>
-              <strong id="finHeroSaldoNatan" class="partner-pill-val val-negative">-R$ 87,25</strong>
+              <span class="partner-pill-name">Natan • Saldo (D25)</span>
+              <strong id="finHeroSaldoNatan" class="partner-pill-val val-negative">-R$ 21,00</strong>
             </div>
           </div>
         </div>
 
-        <!-- 1. PAINEL DE INDICADORES GERAIS DO NEGÓCIO (BENTO GRID 2x2) -->
+        <!-- 1. PAINEL DE INDICADORES GERAIS DO NEGÓCIO (B15:G17) -->
         <div class="ios-card finance-section-card">
           <div class="label-row" style="margin-bottom: 12px;">
             <span class="ios-section-label">
@@ -790,59 +790,59 @@
                 <rect x="14" y="14" width="7" height="7"></rect>
                 <rect x="3" y="14" width="7" height="7"></rect>
               </svg>
-              Indicadores Gerais do Negócio
+              Indicadores Gerais (KPIs)
             </span>
           </div>
 
           <div class="kpi-bento-grid">
-            <!-- KPI 1: Receita Total Bruta -->
+            <!-- KPI 1: Receita Total Bruta (B16 / B17) -->
             <div class="kpi-bento-item">
               <span class="kpi-label">Receita Total Bruta</span>
-              <strong id="kpiReceitaValor" class="kpi-value">R$ 46,00</strong>
-              <span id="kpiReceitaSub" class="kpi-sub">Total: 7 palhas vendidas</span>
+              <strong id="kpiReceitaValor" class="kpi-value">R$ 348,00</strong>
+              <span id="kpiReceitaSub" class="kpi-sub">Total: 37 palhas vendidas</span>
             </div>
 
-            <!-- KPI 2: Despesas Totais Realizadas -->
+            <!-- KPI 2: Despesas Totais (C16:D16 / C17:D17) -->
             <div class="kpi-bento-item">
-              <span class="kpi-label">Despesas Realizadas</span>
-              <strong id="kpiDespesasValor" class="kpi-value">R$ 338,50</strong>
-              <span id="kpiDespesasSub" class="kpi-sub">Gastos Esporádicos: R$ 62,00</span>
+              <span class="kpi-label">Despesas Totais</span>
+              <strong id="kpiDespesasValor" class="kpi-value">R$ 42,00</strong>
+              <span id="kpiDespesasSub" class="kpi-sub">Gastos Esporádicos: R$ 42,00</span>
             </div>
 
-            <!-- KPI 3: Lucro Líquido Consolidado -->
-            <div id="kpiLucroBox" class="kpi-bento-item kpi-status-negative">
-              <span class="kpi-label">Lucro Líquido</span>
-              <strong id="kpiLucroValor" class="kpi-value">-R$ 292,50</strong>
+            <!-- KPI 3: Lucro Líquido Geral (E16 / E17) -->
+            <div id="kpiLucroBox" class="kpi-bento-item kpi-status-positive">
+              <span class="kpi-label">Lucro Líquido Geral</span>
+              <strong id="kpiLucroValor" class="kpi-value">R$ 306,00</strong>
               <span id="kpiLucroSub" class="kpi-sub">Divisão igualitária (50% cada)</span>
             </div>
 
-            <!-- KPI 4: Margem Operacional -->
-            <div id="kpiMargemBox" class="kpi-bento-item kpi-status-negative">
+            <!-- KPI 4: Margem Operacional (F16:G16 / F17:G17) -->
+            <div id="kpiMargemBox" class="kpi-bento-item kpi-status-positive">
               <span class="kpi-label">Margem Operacional</span>
-              <strong id="kpiMargemValor" class="kpi-value">-635,9%</strong>
-              <span id="kpiMargemSub" class="kpi-sub">Prejuízo</span>
+              <strong id="kpiMargemValor" class="kpi-value">87,9%</strong>
+              <span id="kpiMargemSub" class="kpi-sub">Lucro Saudável</span>
             </div>
           </div>
 
-          <!-- Barra de Detalhamento de Saídas -->
+          <!-- Linha 27: Barra de Detalhamento de Saídas (D27, F27, G27) -->
           <div class="outflows-breakdown-box">
-            <div class="outflows-header">Detalhamento de Saídas</div>
+            <div class="outflows-header">Detalhamento de Saídas (Linha 27)</div>
             <div class="outflows-row">
-              <span>Insumos Diretos da Palha</span>
-              <strong id="finInsumosDiretos">R$ 276,50</strong>
+              <span>Insumo Direto (D27)</span>
+              <strong id="finInsumosDiretos">R$ 0,00</strong>
             </div>
             <div class="outflows-row">
-              <span>Gastos Esporádicos (Almoço/Água/Transp.)</span>
-              <strong id="finGastosEsporadicos">R$ 62,00</strong>
+              <span>Gasto Esporádico (F27)</span>
+              <strong id="finGastosEsporadicos">R$ 42,00</strong>
             </div>
             <div class="outflows-row outflows-total">
-              <span>Total de Saídas</span>
-              <strong id="finTotalSaidas">R$ 338,50</strong>
+              <span>Total de Saídas (G27)</span>
+              <strong id="finTotalSaidas">R$ 42,00</strong>
             </div>
           </div>
         </div>
 
-        <!-- 2. DIVISÃO DE GASTOS, LUCROS E ACERTO DE CONTAS (50% JOÃO / 50% NATAN) -->
+        <!-- 2. DIVISÃO SOCIETÁRIA & ACERTO DE CONTAS (B20:G25) -->
         <div class="ios-card finance-section-card">
           <div class="label-row" style="margin-bottom: 12px;">
             <span class="ios-section-label">
@@ -852,7 +852,7 @@
                 <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                 <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
               </svg>
-              Divisão 50/50 &amp; Acerto de Contas
+              Conciliação Societária (50/50)
             </span>
           </div>
 
@@ -861,7 +861,7 @@
           </div>
         </div>
 
-        <!-- 3. FICHA TÉCNICA & CALCULADORA DE CUSTO UNITÁRIO POR PALHA -->
+        <!-- 3. FICHA TÉCNICA & CUSTO UNITÁRIO (B5:G12) -->
         <div class="ios-card finance-section-card">
           <div class="label-row" style="margin-bottom: 12px;">
             <span class="ios-section-label">
@@ -875,12 +875,12 @@
             </span>
           </div>
 
-          <!-- Resumo de Economia Unitária (3 Destaques) -->
+          <!-- Resumo de Economia Unitária (F10/G10, F11, F12/G12) -->
           <div class="unit-econ-strip">
             <div class="unit-econ-box">
               <span class="unit-econ-label">Custo / Palha</span>
-              <strong id="ftCustoUnitarioTotal" class="unit-econ-val">R$ 1,93</strong>
-              <span class="unit-econ-tag">100% do custo</span>
+              <strong id="ftCustoUnitarioTotal" class="unit-econ-val">R$ 2,58</strong>
+              <span id="ftTotalPctTag" class="unit-econ-tag">100% do custo</span>
             </div>
             <div class="unit-econ-box">
               <span class="unit-econ-label">Preço Médio</span>
@@ -889,8 +889,8 @@
             </div>
             <div class="unit-econ-box unit-econ-highlight">
               <span class="unit-econ-label">Lucro Bruto / un.</span>
-              <strong id="ftLucroBrutoUnitario" class="unit-econ-val">R$ 8,07</strong>
-              <span id="ftMargemBrutaPct" class="unit-econ-tag">Margem 80,7%</span>
+              <strong id="ftLucroBrutoUnitario" class="unit-econ-val">R$ 7,42</strong>
+              <span id="ftMargemBrutaPct" class="unit-econ-tag">Margem 74,2%</span>
             </div>
           </div>
 

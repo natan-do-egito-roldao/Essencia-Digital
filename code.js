@@ -491,105 +491,133 @@ const syncBtnLabel = document.getElementById("syncBtnLabel");
 const financeSyncDot = document.getElementById("financeSyncDot");
 const financeLastSyncText = document.getElementById("financeLastSyncText");
 
-// Estado base inicial (espelhado da aba "Visão Geral" da planilha)
+// Estado base inicial (espelhado exato do mapeamento B4:G27 da aba "Visão Geral")
 const DADOS_FINANCEIROS_PADRAO = {
+  // Seção 1: Ficha Técnica & Custo Unitário (B5:G12)
   fichaTecnica: {
     itens: [
       {
-        componente: "Ingredientes da Receita Base",
-        detalhamento: "Leite cond., biscoito maisena, cacau 50%, manteiga",
-        custoBase: "R$ 32,50",
-        rendimento: "25",
-        custoUnitario: "R$ 1,30",
-        percentual: "67,4%"
+        componente: "Ingredientes Base",
+        detalhamento: "Insumos da receita (leite cond., chocolate, manteiga, etc.)",
+        custoBase: "R$ 200,00",
+        rendimento: "100",
+        custoUnitario: "R$ 2,00",
+        percentual: "77,5%"
       },
       {
         componente: "Embalagem Individual",
-        detalhamento: "Saquinho celofane 10x15 + fitilho",
-        custoBase: "R$ 18,00",
+        detalhamento: "Saquinho celofane + fitilho",
+        custoBase: "R$ 13,00",
         rendimento: "100",
-        custoUnitario: "R$ 0,18",
-        percentual: "9,3%"
+        custoUnitario: "R$ 0,13",
+        percentual: "5,0%"
       },
       {
         componente: "Adesivo / Tag da Marca",
-        detalhamento: "Adesivo redondo personalizado com logo",
+        detalhamento: "Adesivo redondo com logo",
         custoBase: "R$ 25,00",
         rendimento: "100",
         custoUnitario: "R$ 0,25",
-        percentual: "13,0%"
+        percentual: "9,7%"
       },
       {
-        componente: "Custos Indiretos (Gás / Energia)",
-        detalhamento: "Estimativa proporcional por receita/lote",
+        componente: "Custos Indiretos (Gás/Luz)",
+        detalhamento: "Estimativa rateada por fornada/lote",
         custoBase: "R$ 5,00",
         rendimento: "25",
         custoUnitario: "R$ 0,20",
-        percentual: "10,4%"
+        percentual: "7,8%"
       }
     ],
-    custoTotalUnitario: "R$ 1,93",
-    precoMedioVenda: "R$ 10,00",
-    lucroBrutoUnitario: "R$ 8,07",
-    margemBrutaUnitaria: "80,7%"
+    custoTotalUnitario: "R$ 2,58", // F10 (=SUM(F6:F9))
+    totalPercentual: "100%",       // G10 (=SUM(G6:G9))
+    precoMedioVenda: "R$ 10,00",   // F11
+    lucroBrutoUnitario: "R$ 7,42", // F12 (=F11-F10)
+    margemBrutaUnitaria: "74,2%"   // G12 (=IF(F11>0; (F11-F10)/F11; 0))
   },
+
+  // Seção 2: Painel de Indicadores Gerais (KPIs) (B15:G17)
   indicadores: {
-    receitaBruta: "R$ 46,00",
-    receitaSub: "Total: 7 palhas vendidas",
-    despesasTotais: "R$ 338,50",
-    despesasSub: "Gastos Esporádicos: R$ 62,00",
-    lucroLiquido: "-R$ 292,50",
-    lucroSub: "Divisão igualitária (50% cada)",
-    margemOperacional: "-635,9%",
-    margemSub: "Prejuízo"
+    receitaBruta: "R$ 348,00",                    // B16 (=SUM(Vendas!E2:E500))
+    receitaSub: "Total: 37 palhas vendidas",      // B17
+    despesasTotais: "R$ 42,00",                   // C16:D16 (=SUM('Insumos e Despesas'!E2:E500))
+    despesasSub: "Gastos Esporádicos: R$ 42,00",  // C17:D17
+    lucroLiquido: "R$ 306,00",                    // E16 (=B16-C16)
+    lucroSub: "Divisão igualitária (50% cada)",   // E17
+    margemOperacional: "87,9%",                   // F16:G16 (=IF(B16>0; E16/B16; 0))
+    margemSub: "Lucro Saudável"                   // F17:G17 (=IF(E16>0; "Lucro Saudável"; "Prejuízo"))
   },
+
+  // Seção 3: Divisão Societária & Acerto de Contas (B20:G27)
   divisaoSocios: [
     {
-      metrica: "(+) Receitas Recebidas (Em Mãos/Conta)",
-      joao: "R$ 0,00",
-      natan: "R$ 46,00",
-      total: "R$ 46,00",
+      metrica: "Receitas Recebidas",
+      joao: "R$ 174,00",
+      natan: "R$ 174,00",
+      total: "R$ 348,00",
       regra: "50% para cada",
-      observacao: "Dinheiro arrecadado por sócio"
+      observacao: "Arrecadado fisicamente ou via Pix por sócio"
     },
     {
-      metrica: "(-) Despesas Pagas do Próprio Bolso",
-      joao: "R$ 233,50",
-      natan: "R$ 105,00",
-      total: "R$ 338,50",
+      metrica: "Despesas Pagas",
+      joao: "R$ 42,00",
+      natan: "R$ 0,00",
+      total: "R$ 42,00",
       regra: "50% para cada",
-      observacao: "Gastos adiantados por sócio"
+      observacao: "Desembolsado do próprio bolso para o negócio"
     },
     {
-      metrica: "(=) Parcela Justa das Despesas (50%)",
-      joao: "R$ 169,25",
-      natan: "R$ 169,25",
-      total: "R$ 338,50",
+      metrica: "Parcela Justa Despesas",
+      joao: "R$ 21,00",
+      natan: "R$ 21,00",
+      total: "R$ 42,00",
       regra: "50% / 50%",
-      observacao: "Custo de responsabilidade de cada sócio"
+      observacao: "Metade dos custos totais (=E22/2)"
     },
     {
-      metrica: "(=) Lucro Líquido a Receber (50%)",
-      joao: "-R$ 146,25",
-      natan: "-R$ 146,25",
-      total: "-R$ 292,50",
+      metrica: "Lucro Líquido Justo",
+      joao: "R$ 153,00",
+      natan: "R$ 153,00",
+      total: "R$ 306,00",
       regra: "50% / 50%",
-      observacao: "Metade do lucro total realizado"
+      observacao: "Metade do lucro líquido real (=(E21-E22)/2)"
     },
     {
-      metrica: "(=) Saldo Líquido de Compensação",
-      joao: "R$ 87,25",
-      natan: "-R$ 87,25",
+      metrica: "Saldo de Compensação",
+      joao: "R$ 21,00",
+      natan: "-R$ 21,00",
       total: "R$ 0,00",
       regra: "Equilíbrio (R$ 0,00)",
-      observacao: "Posição final de acerto"
+      observacao: "(Despesas Pagas + Lucro a Receber) - Receitas Retidas"
     }
   ],
-  resolucaoAcerto: "👉 NATAN deve transferir via Pix para JOÃO o valor de R$ 87,25",
+  dadosSocio: {
+    joao: {
+      recebido: "R$ 174,00",
+      gasto: "R$ 42,00",
+      parcelaJusta: "R$ 21,00",
+      lucroEsperado: "R$ 153,00",
+      saldoCompensacao: "R$ 21,00"
+    },
+    natan: {
+      recebido: "R$ 174,00",
+      gasto: "R$ 0,00",
+      parcelaJusta: "R$ 21,00",
+      lucroEsperado: "R$ 153,00",
+      saldoCompensacao: "-R$ 21,00"
+    },
+    consolidado: {
+      totalReceita: "R$ 348,00",
+      totalDespesa: "R$ 42,00",
+      totalLucro: "R$ 306,00",
+      saldoEquilibrio: "R$ 0,00"
+    }
+  },
+  resolucaoAcerto: "👉 NATAN deve transferir via Pix para JOÃO o valor de R$ 21,00", // C26:G26
   saidas: {
-    insumosDiretos: "R$ 276,50",
-    gastosEsporadicos: "R$ 62,00",
-    totalSaidas: "R$ 338,50"
+    insumosDiretos: "R$ 0,00",    // D27
+    gastosEsporadicos: "R$ 42,00",// F27
+    totalSaidas: "R$ 42,00"       // G27 (=D27+F27)
   }
 };
 
@@ -613,10 +641,11 @@ function renderizarPainelGestao(dados) {
     Array.isArray(dados.divisaoSocios) && dados.divisaoSocios.length > 0
       ? dados.divisaoSocios
       : DADOS_FINANCEIROS_PADRAO.divisaoSocios;
+  const socioObj = dados.dadosSocio || null;
   const saidas = dados.saidas || DADOS_FINANCEIROS_PADRAO.saidas;
   const resolucao = dados.resolucaoAcerto || DADOS_FINANCEIROS_PADRAO.resolucaoAcerto;
 
-  // 1. Hero Resolução Final do Acerto
+  // 1. Hero Resolução Final do Acerto (C26:G26 e Linha 25: C25, D25, E25)
   const finResolucaoTexto = document.getElementById("finResolucaoTexto");
   const finHeroSaldoJoao = document.getElementById("finHeroSaldoJoao");
   const finHeroSaldoNatan = document.getElementById("finHeroSaldoNatan");
@@ -624,28 +653,43 @@ function renderizarPainelGestao(dados) {
 
   if (finResolucaoTexto) finResolucaoTexto.textContent = resolucao;
 
-  const linhaSaldo = div.find((d) =>
-    String(d.metrica).toLowerCase().includes("saldo líquido")
-  );
-  if (linhaSaldo) {
-    if (finHeroSaldoJoao) {
-      finHeroSaldoJoao.textContent = linhaSaldo.joao;
-      finHeroSaldoJoao.className = `partner-pill-val ${
-        ehValorNegativo(linhaSaldo.joao) ? "val-negative" : "val-positive"
-      }`;
-    }
-    if (finHeroSaldoNatan) {
-      finHeroSaldoNatan.textContent = linhaSaldo.natan;
-      finHeroSaldoNatan.className = `partner-pill-val ${
-        ehValorNegativo(linhaSaldo.natan) ? "val-negative" : "val-positive"
-      }`;
-    }
-    if (finEquilibrioTag && linhaSaldo.regra) {
-      finEquilibrioTag.textContent = linhaSaldo.regra;
-    }
+  // Localiza a Linha 25 (Saldo de Compensação) via dadosSocio (C25/D25) ou via array divisaoSocios
+  const linhaSaldo =
+    div.find((d) => {
+      const m = String(d.metrica || "").toLowerCase();
+      return m.includes("saldo") || m.includes("compensação") || m.includes("compensacao");
+    }) || div[4];
+
+  const saldoJoaoStr =
+    (socioObj && socioObj.joao && socioObj.joao.saldoCompensacao) ||
+    (linhaSaldo && linhaSaldo.joao) ||
+    "R$ 0,00";
+  const saldoNatanStr =
+    (socioObj && socioObj.natan && socioObj.natan.saldoCompensacao) ||
+    (linhaSaldo && linhaSaldo.natan) ||
+    "R$ 0,00";
+
+  if (finHeroSaldoJoao) {
+    finHeroSaldoJoao.textContent = saldoJoaoStr;
+    finHeroSaldoJoao.className = `partner-pill-val ${
+      ehValorNegativo(saldoJoaoStr) ? "val-negative" : "val-positive"
+    }`;
+  }
+  if (finHeroSaldoNatan) {
+    finHeroSaldoNatan.textContent = saldoNatanStr;
+    finHeroSaldoNatan.className = `partner-pill-val ${
+      ehValorNegativo(saldoNatanStr) ? "val-negative" : "val-positive"
+    }`;
+  }
+  if (finEquilibrioTag) {
+    const regraTexto =
+      (linhaSaldo && linhaSaldo.regra) ||
+      (socioObj && socioObj.consolidado && `Equilíbrio (${socioObj.consolidado.saldoEquilibrio})`) ||
+      "Equilíbrio (R$ 0,00)";
+    finEquilibrioTag.textContent = regraTexto;
   }
 
-  // 2. Indicadores Gerais do Negócio (Bento Grid)
+  // 2. Indicadores Gerais do Negócio (B16:G17)
   const kpiReceitaValor = document.getElementById("kpiReceitaValor");
   const kpiReceitaSub = document.getElementById("kpiReceitaSub");
   const kpiDespesasValor = document.getElementById("kpiDespesasValor");
@@ -674,13 +718,15 @@ function renderizarPainelGestao(dados) {
   if (kpiMargemValor) kpiMargemValor.textContent = ind.margemOperacional;
   if (kpiMargemSub) kpiMargemSub.textContent = ind.margemSub;
   if (kpiMargemBox) {
-    const isNegMargem = ehValorNegativo(ind.margemOperacional);
+    const isNegMargem =
+      ehValorNegativo(ind.margemOperacional) ||
+      String(ind.margemSub || "").toLowerCase().includes("prejuízo");
     kpiMargemBox.className = `kpi-bento-item ${
       isNegMargem ? "kpi-status-negative" : "kpi-status-positive"
     }`;
   }
 
-  // Detalhamento de Saídas
+  // Linha 27: Detalhamento de Saídas (D27 = Insumo Direto, F27 = Gasto Esporádico, G27 = Total)
   const finInsumosDiretos = document.getElementById("finInsumosDiretos");
   const finGastosEsporadicos = document.getElementById("finGastosEsporadicos");
   const finTotalSaidas = document.getElementById("finTotalSaidas");
@@ -689,17 +735,17 @@ function renderizarPainelGestao(dados) {
   if (finGastosEsporadicos) finGastosEsporadicos.textContent = saidas.gastosEsporadicos;
   if (finTotalSaidas) finTotalSaidas.textContent = saidas.totalSaidas;
 
-  // 3. Divisão de Gastos, Lucros e Acerto de Contas (50% João / 50% Natan)
+  // 3. Divisão Societária & Acerto de Contas (Linhas 21 a 25 -> B21:G25)
   const partnerDivisionList = document.getElementById("partnerDivisionList");
   if (partnerDivisionList) {
     partnerDivisionList.innerHTML = div
-      .map((item) => {
+      .map((item, idx) => {
         const lower = String(item.metrica || "").toLowerCase();
+        const isSaldo =
+          lower.includes("saldo") || lower.includes("compensação") || idx === 4;
         const isLucroOuSaldo =
-          lower.includes("lucro líquido") || lower.includes("saldo líquido");
-        const extraCardClass = lower.includes("saldo líquido")
-          ? "highlight-settlement"
-          : "";
+          isSaldo || lower.includes("lucro");
+        const extraCardClass = isSaldo ? "highlight-settlement" : "";
 
         return `
           <div class="partner-metric-card ${extraCardClass}">
@@ -712,15 +758,15 @@ function renderizarPainelGestao(dados) {
             </div>
             <div class="partner-values-grid">
               <div class="partner-val-col">
-                <span>João</span>
+                <span>João (C${21 + idx})</span>
                 <strong class="${classeCorValor(item.joao, isLucroOuSaldo)}">${item.joao}</strong>
               </div>
               <div class="partner-val-col">
-                <span>Natan</span>
+                <span>Natan (D${21 + idx})</span>
                 <strong class="${classeCorValor(item.natan, isLucroOuSaldo)}">${item.natan}</strong>
               </div>
               <div class="partner-val-col">
-                <span>Total</span>
+                <span>Total (E${21 + idx})</span>
                 <strong class="${classeCorValor(item.total, isLucroOuSaldo)}">${item.total}</strong>
               </div>
             </div>
@@ -730,8 +776,9 @@ function renderizarPainelGestao(dados) {
       .join("");
   }
 
-  // 4. Ficha Técnica & Custo Unitário por Palha
+  // 4. Ficha Técnica & Custo Unitário por Palha (B5:G12)
   const ftCustoUnitarioTotal = document.getElementById("ftCustoUnitarioTotal");
+  const ftTotalPctTag = document.getElementById("ftTotalPctTag");
   const ftPrecoMedioVenda = document.getElementById("ftPrecoMedioVenda");
   const ftLucroBrutoUnitario = document.getElementById("ftLucroBrutoUnitario");
   const ftMargemBrutaPct = document.getElementById("ftMargemBrutaPct");
@@ -739,12 +786,18 @@ function renderizarPainelGestao(dados) {
   const techSheetItemsList = document.getElementById("techSheetItemsList");
 
   if (ftCustoUnitarioTotal) ftCustoUnitarioTotal.textContent = ft.custoTotalUnitario;
+  if (ftTotalPctTag && ft.totalPercentual) {
+    ftTotalPctTag.textContent = `${ft.totalPercentual} do custo`;
+  }
   if (ftPrecoMedioVenda) ftPrecoMedioVenda.textContent = ft.precoMedioVenda;
   if (ftLucroBrutoUnitario) ftLucroBrutoUnitario.textContent = ft.lucroBrutoUnitario;
   if (ftMargemBrutaPct) ftMargemBrutaPct.textContent = `Margem ${ft.margemBrutaUnitaria}`;
 
   const coresGrafico = ["#5A200D", "#D4A373", "#943E21", "#C08552"];
-  const itensFicha = Array.isArray(ft.itens) ? ft.itens : DADOS_FINANCEIROS_PADRAO.fichaTecnica.itens;
+  const itensFicha =
+    Array.isArray(ft.itens) && ft.itens.length > 0
+      ? ft.itens
+      : DADOS_FINANCEIROS_PADRAO.fichaTecnica.itens;
 
   if (costCompositionBar) {
     costCompositionBar.innerHTML = itensFicha

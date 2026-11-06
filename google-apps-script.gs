@@ -1,9 +1,7 @@
 // ============================================================================
-// LA DOLCE BRASIL — GOOGLE APPS SCRIPT (BACKEND DA PLANILHA)
-// Abas integradas:
-//   1. "Visão Geral"        -> Leitura de indicadores, ficha técnica e acerto 50/50
-//   2. "Vendas"             -> Registro de vendas
-//   3. "Insumos e Despesas" -> Registro e leitura de insumos e despesas
+// LA DOLCE BRASIL — GOOGLE APPS SCRIPT (BACKEND OFICIAL DA PLANILHA)
+// Mapeamento exato A1 Notation da aba "Visão Geral" (B4:G27),
+// além de "Vendas" e "Insumos e Despesas".
 // ============================================================================
 
 // ============================================================================
@@ -39,9 +37,7 @@ function doPost(e) {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var dados = JSON.parse(e.postData.contents);
 
-    // ------------------------------------------------------------------------
-    // AÇÃO A: Apenas leitura via POST
-    // ------------------------------------------------------------------------
+    // AÇÃO A: Leitura completa via POST
     if (dados.acao === "lerGestao" || dados.acao === "lerTudo") {
       return ContentService.createTextOutput(
         JSON.stringify({
@@ -52,16 +48,24 @@ function doPost(e) {
       ).setMimeType(ContentService.MimeType.JSON);
     }
 
-    // ------------------------------------------------------------------------
-    // AÇÃO B: Registrar Despesa na aba "Insumos e Despesas"
-    // ------------------------------------------------------------------------
+    // AÇÃO B: Restaurar fórmulas de acerto 50/50 (C25:E25) se solicitado
+    if (dados.acao === "restaurarFormulas") {
+      restaurarFormulasDeAcerto();
+      SpreadsheetApp.flush();
+      return ContentService.createTextOutput(
+        JSON.stringify({
+          status: "sucesso",
+          gestao: lerAbaVisaoGeral()
+        })
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // AÇÃO C: Registrar Despesa na aba "Insumos e Despesas"
     if (dados.acao === "registrarDespesa" || dados.tipoRegistro === "despesa") {
       return registrarNovaDespesa(ss, dados);
     }
 
-    // ------------------------------------------------------------------------
-    // AÇÃO C (Padrão): Registrar Venda na aba "Vendas"
-    // ------------------------------------------------------------------------
+    // AÇÃO D (Padrão): Registrar Venda na aba "Vendas"
     return registrarNovaVenda(ss, dados);
 
   } catch (err) {
@@ -158,7 +162,6 @@ function registrarNovaDespesa(ss, dados) {
     ).setMimeType(ContentService.MimeType.JSON);
   }
 
-  // Usa a data enviada pelo app (dd/MM/yyyy) ou gera a data atual
   var dataLancamento = dados.data
     ? String(dados.data).trim()
     : Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "dd/MM/yyyy");
@@ -166,20 +169,19 @@ function registrarNovaDespesa(ss, dados) {
   var quantidade = Number(dados.quantidade) || 1;
   var valorTotal = Number(dados.valorTotal) || 0;
 
-  // Estrutura idêntica à aba "Insumos e Despesas" (Colunas A até H)
+  // Estrutura exata da aba "Insumos e Despesas" (Colunas A até H)
   var novaLinha = [
-    dataLancamento,                   // Coluna A: Data (dd/MM/yyyy)
-    dados.categoria || "Ingredientes",// Coluna B: Categoria
-    dados.descricao || "",            // Coluna C: Item / Descrição
-    quantidade,                       // Coluna D: Quantidade
-    valorTotal,                       // Coluna E: Valor Total (R$)
-    dados.pagoPor || "Natan",         // Coluna F: Pago por (João ou Natan)
+    dataLancamento,                    // Coluna A: Data (dd/MM/yyyy)
+    dados.categoria || "Ingredientes", // Coluna B: Categoria
+    dados.descricao || "",             // Coluna C: Item / Descrição
+    quantidade,                        // Coluna D: Quantidade
+    valorTotal,                        // Coluna E: Valor Total (R$)
+    dados.pagoPor || "Natan",          // Coluna F: Pago por (João ou Natan)
     dados.tipoGasto || "Insumo Direto",// Coluna G: Tipo de Gasto (Insumo Direto ou Gasto Esporádico)
-    dados.observacoes || ""           // Coluna H: Observações
+    dados.observacoes || ""            // Coluna H: Observações
   ];
 
-  // Localiza a primeira linha disponível verificando Coluna A (Data) e Coluna C (Item / Descrição)
-  // Isso ignora os menus dropdown pré-formatados nas Colunas B, F e G!
+  // Verifica Colunas A (Data) e C (Item / Descrição) para ignorar dropdowns vazios nas Colunas B, F e G
   var ultimaLinha = sheet.getLastRow();
   var linhaDestino = 2;
 
@@ -196,10 +198,7 @@ function registrarNovaDespesa(ss, dados) {
     }
   }
 
-  // Insere a despesa na primeira linha disponível
   sheet.getRange(linhaDestino, 1, 1, novaLinha.length).setValues([novaLinha]);
-
-  // Força o recálculo imediato das fórmulas da aba "Visão Geral"
   SpreadsheetApp.flush();
 
   var gestaoAtualizada = null;
@@ -284,7 +283,6 @@ function lerAbaDespesas() {
     var tipoGasto = String(row[6] || "").trim();
     var observacoes = String(row[7] || "").trim();
 
-    // Ignora linhas em branco que possuem apenas validação de dados (dropdown vazio)
     if (data === "" && descricao === "") continue;
 
     var valorNum = converterMoedaParaNumero(valorTotalFmt);
@@ -322,145 +320,183 @@ function lerAbaDespesas() {
 }
 
 // ============================================================================
-// 4. PARSER INTELIGENTE DA ABA "VISÃO GERAL"
+// 4. LEITURA PRECISA DA ABA "VISÃO GERAL" (MAPEAMENTO EXATO B4:G27)
 // ============================================================================
+
+/**
+ * Lê o valor formatado de uma coordenada A1 (ex: "B16", "F10", "C26")
+ * a partir da matriz carregada de A1:G30.
+ */
+function lerCelulaA1(grid, a1) {
+  var match = /^([A-Z]+)(\d+)$/i.exec(String(a1 || "").trim());
+  if (!match) return "";
+  var colIndex = match[1].toUpperCase().charCodeAt(0) - 65; // A=0, B=1, C=2, D=3, E=4, F=5, G=6
+  var rowIndex = parseInt(match[2], 10) - 1;
+  if (rowIndex < 0 || rowIndex >= grid.length) return "";
+  if (colIndex < 0 || colIndex >= grid[rowIndex].length) return "";
+  return String(grid[rowIndex][colIndex] || "").trim();
+}
+
 function lerAbaVisaoGeral() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName("Visão Geral") || ss.getSheetByName("Visao Geral") || ss.getSheets()[0];
-  var rows = sheet.getDataRange().getDisplayValues();
+  var sheet =
+    ss.getSheetByName("Visão Geral") ||
+    ss.getSheetByName("Visao Geral") ||
+    ss.getSheets()[0];
 
-  var resultado = {
-    fichaTecnica: {
-      itens: [],
-      custoTotalUnitario: "R$ 0,00",
-      precoMedioVenda: "R$ 0,00",
-      lucroBrutoUnitario: "R$ 0,00",
-      margemBrutaUnitaria: "0,0%"
+  // Lê toda a matriz A1:G30 de uma única vez (rápido e preserva formatação R$ e %)
+  var grid = sheet.getRange("A1:G30").getDisplayValues();
+  var gridRaw = sheet.getRange("A1:G30").getValues();
+
+  // --------------------------------------------------------------------------
+  // SEÇÃO 1: FICHA TÉCNICA & CUSTO UNITÁRIO (B5:G12)
+  //   - B6:G9  -> Componentes (Ingredientes, Embalagem, Adesivo, Custos Indiretos)
+  //   - F10    -> Custo Total Unitário (=SUM(F6:F9)) | G10 -> Total % (=SUM(G6:G9))
+  //   - F11    -> Preço Médio de Venda
+  //   - F12    -> Lucro Bruto Unitário (=F11-F10)    | G12 -> Margem Bruta %
+  // --------------------------------------------------------------------------
+  var itensFicha = [];
+  for (var r = 6; r <= 9; r++) {
+    var nomeComp = lerCelulaA1(grid, "B" + r);
+    if (!nomeComp) continue;
+
+    var custoBaseStr = lerCelulaA1(grid, "D" + r);
+    // Se na planilha D6 estiver apenas "200" sem "R$", garante formatação amigável
+    if (custoBaseStr && custoBaseStr.indexOf("R$") === -1 && !isNaN(Number(gridRaw[r - 1][3]))) {
+      custoBaseStr = "R$ " + Number(gridRaw[r - 1][3]).toFixed(2).replace(".", ",");
+    }
+
+    itensFicha.push({
+      componente: nomeComp,
+      detalhamento: lerCelulaA1(grid, "C" + r),
+      custoBase: custoBaseStr || "R$ 0,00",
+      rendimento: lerCelulaA1(grid, "E" + r) || "1",
+      custoUnitario: lerCelulaA1(grid, "F" + r) || "R$ 0,00",
+      percentual: lerCelulaA1(grid, "G" + r) || "0,0%"
+    });
+  }
+
+  var precoMedioStr = lerCelulaA1(grid, "F11") || "R$ 0,00";
+  if (precoMedioStr.indexOf("R$") === -1 && !isNaN(Number(gridRaw[10][5])) && Number(gridRaw[10][5]) > 0) {
+    precoMedioStr = "R$ " + Number(gridRaw[10][5]).toFixed(2).replace(".", ",");
+  }
+
+  var fichaTecnica = {
+    itens: itensFicha,
+    custoTotalUnitario: lerCelulaA1(grid, "F10") || "R$ 0,00",
+    totalPercentual: lerCelulaA1(grid, "G10") || "100%",
+    precoMedioVenda: precoMedioStr,
+    lucroBrutoUnitario: lerCelulaA1(grid, "F12") || "R$ 0,00",
+    margemBrutaUnitaria: lerCelulaA1(grid, "G12") || "0,0%"
+  };
+
+  // --------------------------------------------------------------------------
+  // SEÇÃO 2: PAINEL DE INDICADORES GERAIS (KPIs) (B15:G17)
+  //   - B16 / B17       -> Receita Total Bruta / Total palhas vendidas
+  //   - C16:D16 / C17   -> Despesas Totais / Gastos Esporádicos
+  //   - E16 / E17       -> Lucro Líquido Geral / Subtítulo Lucro
+  //   - F16:G16 / F17   -> Margem Operacional / Status da Operação
+  // --------------------------------------------------------------------------
+  var indicadores = {
+    receitaBruta: lerCelulaA1(grid, "B16") || "R$ 0,00",
+    receitaSub: lerCelulaA1(grid, "B17") || "Total: 0 palhas vendidas",
+    despesasTotais: lerCelulaA1(grid, "C16") || "R$ 0,00",
+    despesasSub: lerCelulaA1(grid, "C17") || "Gastos Esporádicos: R$ 0,00",
+    lucroLiquido: lerCelulaA1(grid, "E16") || "R$ 0,00",
+    lucroSub: lerCelulaA1(grid, "E17") || "Divisão igualitária (50% cada)",
+    margemOperacional: lerCelulaA1(grid, "F16") || "0,0%",
+    margemSub: lerCelulaA1(grid, "F17") || "—"
+  };
+
+  // --------------------------------------------------------------------------
+  // SEÇÃO 3: DIVISÃO SOCIETÁRIA & ACERTO DE CONTAS (B20:G27)
+  //   - Linhas 21 a 25:
+  //       Linha 21: Receitas Recebidas     (B21, João=C21, Natan=D21, Total=E21, Regra=F21, Obs=G21)
+  //       Linha 22: Despesas Pagas         (B22, João=C22, Natan=D22, Total=E22, Regra=F22, Obs=G22)
+  //       Linha 23: Parcela Justa Despesas (B23, João=C23, Natan=D23, Total=E23, Regra=F23, Obs=G23)
+  //       Linha 24: Lucro Líquido Justo    (B24, João=C24, Natan=D24, Total=E24, Regra=F24, Obs=G24)
+  //       Linha 25: Saldo de Compensação   (B25, João=C25, Natan=D25, Total=E25, Regra=F25, Obs=G25)
+  //   - C26:G26 (mesclada) -> Resolução Final do Acerto (Pix)
+  //   - Linha 27           -> D27 (Insumo Direto), F27 (Gasto Esporádico), G27 (Total Saídas)
+  // --------------------------------------------------------------------------
+  var padroesLinhasSocios = [
+    { linha: 21, metricaPadrao: "(+) Receitas Recebidas", regraPadrao: "50% para cada", obsPadrao: "Arrecadado por sócio" },
+    { linha: 22, metricaPadrao: "(-) Despesas Pagas", regraPadrao: "50% para cada", obsPadrao: "Desembolsado do próprio bolso" },
+    { linha: 23, metricaPadrao: "(=) Parcela Justa Despesas (50%)", regraPadrao: "50% / 50%", obsPadrao: "Metade dos custos totais" },
+    { linha: 24, metricaPadrao: "(=) Lucro Líquido Justo (50%)", regraPadrao: "50% / 50%", obsPadrao: "Metade do lucro líquido real" },
+    { linha: 25, metricaPadrao: "(=) Saldo de Compensação", regraPadrao: "Equilíbrio (R$ 0,00)", obsPadrao: "(Despesas + Lucro) - Receitas" }
+  ];
+
+  var divisaoSocios = [];
+  for (var i = 0; i < padroesLinhasSocios.length; i++) {
+    var cfg = padroesLinhasSocios[i];
+    var L = cfg.linha;
+    divisaoSocios.push({
+      metrica: lerCelulaA1(grid, "B" + L) || cfg.metricaPadrao,
+      joao: lerCelulaA1(grid, "C" + L) || "R$ 0,00",
+      natan: lerCelulaA1(grid, "D" + L) || "R$ 0,00",
+      total: lerCelulaA1(grid, "E" + L) || "R$ 0,00",
+      regra: lerCelulaA1(grid, "F" + L) || cfg.regraPadrao,
+      observacao: lerCelulaA1(grid, "G" + L) || cfg.obsPadrao
+    });
+  }
+
+  // Objeto estruturado de conciliação societária (Matriz C21:E25)
+  var dadosSocio = {
+    joao: {
+      recebido: lerCelulaA1(grid, "C21") || "R$ 0,00",
+      gasto: lerCelulaA1(grid, "C22") || "R$ 0,00",
+      parcelaJusta: lerCelulaA1(grid, "C23") || "R$ 0,00",
+      lucroEsperado: lerCelulaA1(grid, "C24") || "R$ 0,00",
+      saldoCompensacao: lerCelulaA1(grid, "C25") || "R$ 0,00",
+      saldoNumerico: Number(gridRaw[24][2]) || 0
     },
-    indicadores: {
-      receitaBruta: "R$ 0,00",
-      receitaSub: "",
-      despesasTotais: "R$ 0,00",
-      despesasSub: "",
-      lucroLiquido: "R$ 0,00",
-      lucroSub: "",
-      margemOperacional: "0,0%",
-      margemSub: ""
+    natan: {
+      recebido: lerCelulaA1(grid, "D21") || "R$ 0,00",
+      gasto: lerCelulaA1(grid, "D22") || "R$ 0,00",
+      parcelaJusta: lerCelulaA1(grid, "D23") || "R$ 0,00",
+      lucroEsperado: lerCelulaA1(grid, "D24") || "R$ 0,00",
+      saldoCompensacao: lerCelulaA1(grid, "D25") || "R$ 0,00",
+      saldoNumerico: Number(gridRaw[24][3]) || 0
     },
-    divisaoSocios: [],
-    resolucaoAcerto: "",
-    saidas: {
-      insumosDiretos: "R$ 0,00",
-      gastosEsporadicos: "R$ 0,00",
-      totalSaidas: "R$ 0,00"
+    consolidado: {
+      totalReceita: lerCelulaA1(grid, "E21") || "R$ 0,00",
+      totalDespesa: lerCelulaA1(grid, "E22") || "R$ 0,00",
+      totalLucro: lerCelulaA1(grid, "E24") || "R$ 0,00",
+      saldoEquilibrio: lerCelulaA1(grid, "E25") || "R$ 0,00"
     }
   };
 
-  var secaoAtual = "";
+  // Resolução Final do Acerto (C26:G26 mesclada)
+  var resolucaoAcerto =
+    lerCelulaA1(grid, "C26") ||
+    lerCelulaA1(grid, "B26") ||
+    "✅ Contas 100% equilibradas! Nenhuma transferência necessária.";
 
-  for (var r = 0; r < rows.length; r++) {
-    var row = rows[r];
-    var colA = String(row[0] || "").trim();
-    var colALower = colA.toLowerCase();
+  // Linha 27: Detalhamento de Saídas (D27 = Insumo Direto, F27 = Gasto Esporádico, G27 = Total)
+  var saidas = {
+    insumosDiretos: lerCelulaA1(grid, "D27") || "R$ 0,00",
+    gastosEsporadicos: lerCelulaA1(grid, "F27") || "R$ 0,00",
+    totalSaidas: lerCelulaA1(grid, "G27") || "R$ 0,00"
+  };
 
-    // Identifica mudança de seção
-    if (colALower.indexOf("ficha técnica") !== -1) {
-      secaoAtual = "ficha";
-      continue;
-    }
-    if (colALower.indexOf("painel de indicadores") !== -1) {
-      secaoAtual = "indicadores";
-      continue;
-    }
-    if (colALower.indexOf("divisão de gastos") !== -1) {
-      secaoAtual = "divisao";
-      continue;
-    }
-
-    // --- SEÇÃO 1: FICHA TÉCNICA ---
-    if (secaoAtual === "ficha") {
-      if (!colA || colALower.indexOf("componente do custo") !== -1) continue;
-
-      if (colALower.indexOf("custo total de produção") !== -1) {
-        resultado.fichaTecnica.custoTotalUnitario = row[4] || "R$ 0,00";
-      } else if (colALower.indexOf("preço médio de venda") !== -1) {
-        resultado.fichaTecnica.precoMedioVenda = row[4] || "R$ 0,00";
-      } else if (colALower.indexOf("lucro bruto unitário") !== -1) {
-        resultado.fichaTecnica.lucroBrutoUnitario = row[4] || "R$ 0,00";
-        resultado.fichaTecnica.margemBrutaUnitaria = row[5] || "0,0%";
-      } else if (row[4]) {
-        resultado.fichaTecnica.itens.push({
-          componente: colA,
-          detalhamento: row[1] || "",
-          custoBase: row[2] || "-",
-          rendimento: row[3] || "-",
-          custoUnitario: row[4] || "R$ 0,00",
-          percentual: row[5] || "0%"
-        });
-      }
-    }
-
-    // --- SEÇÃO 2: PAINEL DE INDICADORES GERAIS ---
-    if (colALower.indexOf("receita total bruta") !== -1 && r + 2 < rows.length) {
-      var linhaTitulos = rows[r];
-      var linhaValores = rows[r + 1];
-      var linhaSubs = rows[r + 2];
-
-      // Mapeia as colunas preenchidas (suporta células mescladas como C:D e E:F)
-      var cols = [];
-      for (var c = 0; c < linhaTitulos.length; c++) {
-        if (String(linhaTitulos[c] || "").trim() !== "") {
-          cols.push(c);
-        }
-      }
-
-      if (cols.length >= 4) {
-        resultado.indicadores.receitaBruta = linhaValores[cols[0]] || "R$ 0,00";
-        resultado.indicadores.receitaSub = linhaSubs[cols[0]] || "";
-
-        resultado.indicadores.despesasTotais = linhaValores[cols[1]] || "R$ 0,00";
-        resultado.indicadores.despesasSub = linhaSubs[cols[1]] || "";
-
-        resultado.indicadores.lucroLiquido = linhaValores[cols[2]] || "R$ 0,00";
-        resultado.indicadores.lucroSub = linhaSubs[cols[2]] || "";
-
-        resultado.indicadores.margemOperacional = linhaValores[cols[3]] || "0,0%";
-        resultado.indicadores.margemSub = linhaSubs[cols[3]] || "";
-      }
-      r += 2;
-      continue;
-    }
-
-    // --- SEÇÃO 3: DIVISÃO 50/50 E ACERTO DE CONTAS ---
-    if (secaoAtual === "divisao") {
-      if (
-        colA.indexOf("(+)") === 0 ||
-        colA.indexOf("(-)") === 0 ||
-        colA.indexOf("(=)") === 0
-      ) {
-        resultado.divisaoSocios.push({
-          metrica: colA,
-          joao: row[1] || "R$ 0,00",
-          natan: row[2] || "R$ 0,00",
-          total: row[3] || "R$ 0,00",
-          regra: row[4] || "",
-          observacao: row[5] || ""
-        });
-      } else if (colALower.indexOf("resolução final do acerto") !== -1) {
-        for (var k = 1; k < row.length; k++) {
-          if (String(row[k] || "").trim() !== "") {
-            resultado.resolucaoAcerto = String(row[k]).trim();
-            break;
-          }
-        }
-      } else if (colALower.indexOf("detalhamento de saídas") !== -1) {
-        resultado.saidas.insumosDiretos = row[2] || "R$ 0,00";
-        resultado.saidas.gastosEsporadicos = row[4] || "R$ 0,00";
-        resultado.saidas.totalSaidas = row[5] || "R$ 0,00";
-      }
-    }
-  }
-
-  return resultado;
+  return {
+    fichaTecnica: fichaTecnica,
+    indicadores: indicadores,
+    divisaoSocios: divisaoSocios,
+    dadosSocio: dadosSocio,
+    resolucaoAcerto: resolucaoAcerto,
+    saidas: saidas
+  };
 }
 
+/**
+ * Utilitário para injetar/restaurar as fórmulas de compensação societária (C25:E25)
+ */
+function restaurarFormulasDeAcerto() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Visão Geral");
+  if (!sheet) return;
+  sheet.getRange("C25").setFormula("=(C22+C24)-C21");
+  sheet.getRange("D25").setFormula("=(D22+D24)-D21");
+  sheet.getRange("E25").setFormula("=C25+D25");
+}
