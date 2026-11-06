@@ -1,0 +1,19 @@
+{
+  "name": "La Dolce Brasil — Vendas",
+  "short_name": "La Dolce",
+  "description": "Cadastro de vendas de doces artesanais La Dolce Brasil",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#5A200D",
+  "theme_color": "#5A200D",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+

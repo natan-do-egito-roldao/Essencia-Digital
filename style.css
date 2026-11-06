@@ -1,0 +1,949 @@
+/* ==========================================================================
+   LA DOLCE BRASIL — Doces Artesanais
+   Identidade Visual & Design System (iOS Inspired)
+   Fontes: Blosta (Títulos / Marca) & Canva Sans (Interface / Corpo)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+@font-face {
+  font-family: 'Blosta';
+  src: local('Blosta'), local('Blosta Regular'), url('fonts/Blosta.woff2') format('woff2'), url('fonts/Blosta.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Canva Sans';
+  src: local('Canva Sans'), local('CanvaSans-Regular'), url('fonts/CanvaSans-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Canva Sans';
+  src: local('Canva Sans Medium'), local('CanvaSans-Medium'), url('fonts/CanvaSans-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Canva Sans';
+  src: local('Canva Sans Bold'), local('CanvaSans-Bold'), url('fonts/CanvaSans-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Paleta Oficial La Dolce Brasil (extraída da identidade visual #5A200D) */
+  --cocoa-deep: #5A200D;
+  --cocoa-dark: #3B1306;
+  --cocoa-medium: #732B13;
+  --cocoa-light: #943E21;
+  --cocoa-Tint: rgba(90, 32, 13, 0.08);
+  
+  --cream-bg: #F9F5F0;
+  --cream-card: #FFFFFF;
+  --cream-soft: #F2EAE0;
+  --gold-accent: #D4A373;
+  --gold-light: #E9EDC9;
+
+  /* Cores de Status (iOS System Colors adaptadas) */
+  --ios-green: #2E7D32;
+  --ios-green-bg: #E8F5E9;
+  --ios-red: #D32F2F;
+  --ios-red-bg: #FFEBEE;
+
+  /* Texto */
+  --text-primary: #2B1107;
+  --text-secondary: #75564A;
+  --text-muted: #A68B7F;
+  --text-on-dark: #FAF6F2;
+
+  /* Tipografia */
+  --font-brand: 'Blosta', 'Cinzel Decorative', 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Canva Sans', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+
+  /* Raios de Borda & Sombras Estilo iOS */
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --shadow-card: 0 8px 28px rgba(56, 20, 8, 0.07), 0 2px 6px rgba(56, 20, 8, 0.04);
+  --shadow-elevated: 0 14px 36px rgba(78, 30, 14, 0.18);
+  --transition-ios: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  min-height: 100%;
+  background-color: var(--cocoa-dark);
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: radial-gradient(circle at 50% 0%, #682A15 0%, #381408 75%);
+  padding: 0;
+}
+
+/* Container Principal (Simula tela iPhone no Desktop, 100% fluido no Mobile) */
+.app-shell {
+  width: 100%;
+  max-width: 440px;
+  min-height: 100dvh;
+  background-color: var(--cream-bg);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.45);
+}
+
+@media (min-width: 500px) {
+  body {
+    padding: 24px 16px;
+    align-items: center;
+  }
+  .app-shell {
+    min-height: 840px;
+    max-height: 92dvh;
+    border-radius: 44px;
+    border: 6px solid rgba(255, 255, 255, 0.12);
+    overflow-y: auto;
+  }
+}
+
+/* ==========================================================================
+   HEADER / IDENTIDADE LA DOLCE BRASIL
+   ========================================================================== */
+.brand-header {
+  background-color: var(--cocoa-deep);
+  color: var(--text-on-dark);
+  padding: 28px 24px 24px;
+  text-align: center;
+  position: relative;
+  border-bottom-left-radius: 28px;
+  border-bottom-right-radius: 28px;
+  box-shadow: 0 6px 20px rgba(78, 30, 14, 0.25);
+  z-index: 10;
+  transition: all 0.35s var(--transition-ios);
+}
+
+.brand-header.compact {
+  padding: 18px 20px 16px;
+}
+
+.brand-logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-logo-img {
+  width: 100%;
+  max-width: 290px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  transition: max-width 0.35s var(--transition-ios);
+}
+
+.brand-header.compact .brand-logo-img {
+  max-width: 200px;
+}
+
+/* Pílula de Vendedor Ativo no Header */
+.active-seller-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: #FFF;
+  transition: all 0.25s ease;
+}
+
+.active-seller-pill.hidden {
+  display: none;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #4ADE80;
+  box-shadow: 0 0 8px #4ADE80;
+}
+
+/* ==========================================================================
+   CONTEÚDO DAS ABAS
+   ========================================================================== */
+.tab-views {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 18px 104px;
+}
+
+.tab-pane {
+  display: none;
+  flex-direction: column;
+  gap: 18px;
+  animation: iosFadeIn 0.32s var(--transition-ios);
+}
+
+.tab-pane.active {
+  display: flex;
+}
+
+@keyframes iosFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ==========================================================================
+   ABA 1: LOGIN (ESTILO iOS PASSCODE / ACESSO VENDEDOR)
+   ========================================================================== */
+.ios-card {
+  background: var(--cream-card);
+  border-radius: var(--radius-lg);
+  padding: 22px 20px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(78, 30, 14, 0.06);
+}
+
+.login-hero {
+  text-align: center;
+  padding: 8px 4px 4px;
+}
+
+.ios-icon-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  background: var(--cocoa-Tint);
+  color: var(--cocoa-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+
+.ios-icon-circle svg {
+  width: 28px;
+  height: 28px;
+}
+
+.section-title {
+  font-family: var(--font-sans);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.section-desc {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  line-height: 1.45;
+}
+
+/* Campo de Senha + Indicador Visual */
+.password-field-wrap {
+  position: relative;
+  margin-top: 18px;
+}
+
+.ios-input-password {
+  width: 100%;
+  padding: 16px 48px 16px 48px;
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-align: center;
+  color: var(--cocoa-deep);
+  background: var(--cream-bg);
+  border: 1.5px solid rgba(78, 30, 14, 0.15);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.ios-input-password::placeholder {
+  letter-spacing: 0.04em;
+  font-size: 0.92rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.ios-input-password:focus {
+  border-color: var(--cocoa-deep);
+  background: #FFF;
+  box-shadow: 0 0 0 4px rgba(78, 30, 14, 0.1);
+}
+
+.input-leading-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  display: flex;
+  pointer-events: none;
+}
+
+.toggle-visibility-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Teclado Numérico Rápido Estilo iPhone */
+.pin-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.pin-key {
+  height: 52px;
+  border-radius: 14px;
+  border: 1px solid rgba(78, 30, 14, 0.08);
+  background: var(--cream-bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 1.2rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.1s ease, background-color 0.15s ease;
+}
+
+.pin-key:active {
+  transform: scale(0.95);
+  background: var(--cream-soft);
+}
+
+.pin-key.pin-action {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Mensagem de Feedback Login */
+.login-feedback {
+  font-size: 0.83rem;
+  font-weight: 500;
+  text-align: center;
+  min-height: 20px;
+  margin-top: 10px;
+  color: var(--ios-red);
+}
+
+/* Estado Logado na Aba 1 */
+.logged-profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.seller-avatar {
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, var(--cocoa-deep), var(--cocoa-light));
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.65rem;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(78, 30, 14, 0.25);
+}
+
+.seller-badge-role {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--ios-green-bg);
+  color: var(--ios-green);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   ABA 2: VENDAS (CADASTRO DE VENDA)
+   ========================================================================== */
+.label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.ios-section-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Card de Produto Selecionável */
+.product-option-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: var(--cream-bg);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.22s var(--transition-ios);
+  position: relative;
+}
+
+.product-option-card:hover {
+  background: var(--cream-soft);
+}
+
+.product-option-card.selected {
+  background: #FFF;
+  border-color: var(--cocoa-deep);
+  box-shadow: 0 6px 20px rgba(78, 30, 14, 0.12);
+}
+
+.product-icon-box {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: var(--cocoa-deep);
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(78, 30, 14, 0.2);
+}
+
+.product-info {
+  flex: 1;
+}
+
+.product-category {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cocoa-light);
+}
+
+.product-name {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+.product-check {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.product-option-card.selected .product-check {
+  background: var(--cocoa-deep);
+  border-color: var(--cocoa-deep);
+  color: #FFF;
+}
+
+/* Detalhes da Venda (Quantidade & Valor) */
+.sale-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  transition: all 0.3s ease;
+}
+
+.sale-details-container.disabled-section {
+  opacity: 0.45;
+  pointer-events: none;
+  filter: grayscale(0.3);
+}
+
+/* Stepper de Quantidade */
+.qty-control-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--cream-bg);
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(78, 30, 14, 0.1);
+}
+
+.qty-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: none;
+  background: #FFF;
+  color: var(--cocoa-deep);
+  font-size: 1.35rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  transition: transform 0.12s ease, background 0.15s ease;
+}
+
+.qty-btn:active {
+  transform: scale(0.92);
+  background: var(--cream-soft);
+}
+
+.qty-input {
+  width: 80px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Chips Rápidos */
+.quick-chips {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.chip-btn {
+  flex: 1;
+  min-width: 54px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(78, 30, 14, 0.12);
+  background: var(--cream-bg);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chip-btn.active,
+.chip-btn:active {
+  background: var(--cocoa-deep);
+  color: #FFF;
+  border-color: var(--cocoa-deep);
+}
+
+/* Input de Valor Vendido (R$) */
+.currency-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--cream-bg);
+  border: 1.5px solid rgba(78, 30, 14, 0.14);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  transition: all 0.2s ease;
+}
+
+.currency-input-wrap:focus-within {
+  background: #FFF;
+  border-color: var(--cocoa-deep);
+  box-shadow: 0 0 0 4px rgba(78, 30, 14, 0.08);
+}
+
+.currency-prefix {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--cocoa-deep);
+  margin-right: 8px;
+}
+
+.currency-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  outline: none;
+}
+
+.unit-price-calc {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  background: rgba(78, 30, 14, 0.04);
+  padding: 7px 12px;
+  border-radius: 10px;
+}
+
+.unit-price-calc strong {
+  color: var(--cocoa-deep);
+  font-weight: 700;
+}
+
+/* Grid de Formas de Pagamento */
+.payment-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 12px;
+  border-radius: 14px;
+  background: var(--cream-bg);
+  border: 1.5px solid rgba(78, 30, 14, 0.08);
+  cursor: pointer;
+  transition: all 0.18s var(--transition-ios);
+}
+
+.payment-option:active {
+  transform: scale(0.97);
+}
+
+.payment-option.selected {
+  background: var(--cocoa-deep);
+  border-color: var(--cocoa-deep);
+  color: #FFF;
+  box-shadow: 0 6px 16px rgba(78, 30, 14, 0.2);
+}
+
+.payment-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(78, 30, 14, 0.08);
+  color: var(--cocoa-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+}
+
+.payment-option.selected .payment-icon {
+  background: rgba(255, 255, 255, 0.18);
+  color: #FFF;
+}
+
+.payment-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+/* Resumo antes de Enviar */
+.summary-banner {
+  background: var(--cream-soft);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid rgba(78, 30, 14, 0.08);
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+}
+
+.summary-line strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.summary-line.total {
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(78, 30, 14, 0.18);
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: var(--cocoa-deep);
+}
+
+/* Botões Primários Estilo iOS */
+.ios-btn-primary {
+  width: 100%;
+  padding: 16px 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--cocoa-deep);
+  color: #FFF;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: var(--shadow-elevated);
+  transition: all 0.2s var(--transition-ios);
+}
+
+.ios-btn-primary:hover {
+  background: var(--cocoa-medium);
+}
+
+.ios-btn-primary:active {
+  transform: scale(0.98);
+}
+
+.ios-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ios-btn-secondary {
+  width: 100%;
+  padding: 13px 18px;
+  border: 1.5px solid rgba(78, 30, 14, 0.2);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--cocoa-deep);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ios-btn-secondary:active {
+  background: var(--cocoa-Tint);
+}
+
+/* ==========================================================================
+   BARRA DE ABAS INFERIOR (iOS TAB BAR)
+   ========================================================================== */
+.ios-tab-bar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: 440px;
+  height: 78px;
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(78, 30, 14, 0.1);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  padding: 6px 16px 14px;
+  z-index: 50;
+}
+
+@media (min-width: 500px) {
+  .ios-tab-bar {
+    position: sticky;
+    bottom: 0;
+    border-bottom-left-radius: 38px;
+    border-bottom-right-radius: 38px;
+  }
+}
+
+.tab-item {
+  border: none;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease, transform 0.15s ease;
+}
+
+.tab-item:active {
+  transform: scale(0.94);
+}
+
+.tab-item.active {
+  color: var(--cocoa-deep);
+}
+
+.tab-item svg {
+  width: 24px;
+  height: 24px;
+}
+
+.tab-lock-badge {
+  position: absolute;
+  top: 4px;
+  right: calc(50% - 22px);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--cocoa-light);
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-lock-badge.hidden {
+  display: none;
+}
+
+/* ==========================================================================
+   TOAST / NOTIFICAÇÃO ESTILO DYNAMIC ISLAND iOS
+   ========================================================================== */
+.ios-toast {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-120%);
+  background: #1D120E;
+  color: #FFF;
+  padding: 12px 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  z-index: 1000;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 90%;
+  white-space: nowrap;
+}
+
+.ios-toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.toast-icon.success {
+  background: #4ADE80;
+  color: #064E3B;
+}
+
+.toast-icon.error {
+  background: #F87171;
+  color: #7F1D1D;
+}
+
+/* Spinner de Carregamento */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #FFF;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.hidden {
+  display: none !important;
+}
